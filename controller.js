@@ -155,6 +155,28 @@ exports.shelterList = function (req, res) {
     });
 };
 
+exports.addShelter = function (req, res) {
+    let name = req.body.name;
+    let district = req.body.district;
+    let city = req.body.city;
+    let province = req.body.province;
+    let country = req.body.country;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
+
+    connection.query(
+      `INSERT INTO shelter (Name, District, City, Province, Country, Latitude, Longitude) values (?,?,?,?,?,?,?)`,
+      [name, district, city, province, country, latitude, longitude], function(error, rows, fields) {
+        if (error) {
+          console.log(error);
+          response.fail(INTERNAL_ERROR, res);
+        } else {
+          response.ok(rows, res);
+        }
+      }
+    );
+};
+
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
 };
