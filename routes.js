@@ -31,4 +31,8 @@ module.exports = function (app) {
     // Shelter API
     app.route('/shelter')
         .get(cntlr.shelterList);
+
+    // Disaster API
+    app.route('/disaster')
+        .post(cntlr.addDisaster);
 };

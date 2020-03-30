@@ -212,6 +212,27 @@ exports.addShelter = function (req, res) {
     );
 };
 
+exports.addDisaster = function (req, res) {
+    let name = req.body.name;
+    let scale = req.body.scale;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
+
+    connection.query(
+        `INSERT INTO disaster (Name, Scale, Latitude, Longitude) values (?, ?, ?, ?)`,
+        [name, scale, latitude, longitude], 
+        function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.faile(INTERNAL_ERROR, res);
+            }
+            else{
+                response.ok(rows, res);
+            }
+        }
+    )
+}
+
 exports.updateVictimShelter = function (req, res) {
     let id = req.body.id;
     let shelterId = req.body.shelterId;
@@ -279,6 +300,7 @@ exports.updateDisasterConditions = function (req, res) {
         }
     );
 };
+
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
