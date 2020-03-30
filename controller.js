@@ -177,6 +177,18 @@ exports.addShelter = function (req, res) {
     );
 };
 
+exports.disasterList = function (req, res) {
+    connection.query(`SELECT * FROM disaster`, 
+    function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
 exports.addDisaster = function (req, res) {
     let name = req.body.name;
     let scale = req.body.scale;
