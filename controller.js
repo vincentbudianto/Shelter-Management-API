@@ -92,7 +92,7 @@ exports.victimShelterHistory = function (req, res) {
     if (id) {
         connection.query(`SELECT ShelterID, Name, District, City, Province, Country, Latitude, Longitude, Timestamp
             FROM ShelterHistory LEFT JOIN Shelter USING (ShelterID)
-            WHERE VictimID = ?`, [id], function (error, rows, fields) {
+            WHERE VictimID = ? ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 response.fail(INTERNAL_ERROR, res)
