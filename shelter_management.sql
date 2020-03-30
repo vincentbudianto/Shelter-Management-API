@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2020 at 06:56 PM
--- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.4
+-- Generation Time: Mar 30, 2020 at 11:44 AM
+-- Server version: 10.4.6-MariaDB
+-- PHP Version: 7.3.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -32,9 +32,9 @@ CREATE TABLE `conditionhistory` (
   `ConditionID` int(11) NOT NULL,
   `VictimID` int(11) NOT NULL,
   `ConditionName` varchar(25) NOT NULL,
-  `ConditionDesc` text,
+  `ConditionDesc` text DEFAULT NULL,
   `ConditionStatus` tinyint(1) NOT NULL COMMENT '1 = Alive; 0 = Deceased',
-  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -47,6 +47,50 @@ INSERT INTO `conditionhistory` (`ConditionID`, `VictimID`, `ConditionName`, `Con
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `disaster`
+--
+
+CREATE TABLE `disaster` (
+  `DisasterID` int(11) NOT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `Scale` varchar(50) DEFAULT NULL,
+  `Latitude` double DEFAULT NULL,
+  `Longitude` double DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `disaster`
+--
+
+INSERT INTO `disaster` (`DisasterID`, `Name`, `Scale`, `Latitude`, `Longitude`) VALUES
+(1, 'testDisaster', 'big', 1.024, -2.048),
+(2, 'a', '', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `disasterconditionhistory`
+--
+
+CREATE TABLE `disasterconditionhistory` (
+  `DisasterID` int(11) NOT NULL,
+  `DisasterConditionID` int(11) NOT NULL,
+  `DisasterConditionTitle` varchar(25) NOT NULL,
+  `DisasterConditionDesc` varchar(25) NOT NULL,
+  `DisasterConditionStatus` int(11) NOT NULL,
+  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `disasterconditionhistory`
+--
+
+INSERT INTO `disasterconditionhistory` (`DisasterID`, `DisasterConditionID`, `DisasterConditionTitle`, `DisasterConditionDesc`, `DisasterConditionStatus`, `Timestamp`) VALUES
+(1, 1, 'testTitle', 'testDesc', 1, '2020-03-29 23:32:36');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `needshistory`
 --
 
@@ -54,7 +98,7 @@ CREATE TABLE `needshistory` (
   `NeedsHistoryID` int(11) NOT NULL,
   `VictimID` int(11) NOT NULL,
   `NeedsDesc` text NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -101,7 +145,7 @@ CREATE TABLE `shelterhistory` (
   `ShelterHistoryID` int(11) NOT NULL,
   `VictimID` int(11) NOT NULL,
   `ShelterID` int(11) NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -116,6 +160,17 @@ INSERT INTO `shelterhistory` (`ShelterHistoryID`, `VictimID`, `ShelterID`, `Time
 (5, 5, 3, '2020-02-26 15:28:18'),
 (6, 6, 3, '2020-02-26 15:28:42'),
 (7, 5, 4, '2020-02-26 15:29:01');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `UserID` int(11) NOT NULL,
+  `Password` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -173,6 +228,18 @@ ALTER TABLE `conditionhistory`
   ADD KEY `VictimID` (`VictimID`);
 
 --
+-- Indexes for table `disaster`
+--
+ALTER TABLE `disaster`
+  ADD PRIMARY KEY (`DisasterID`);
+
+--
+-- Indexes for table `disasterconditionhistory`
+--
+ALTER TABLE `disasterconditionhistory`
+  ADD PRIMARY KEY (`DisasterConditionID`);
+
+--
 -- Indexes for table `needshistory`
 --
 ALTER TABLE `needshistory`
@@ -209,6 +276,18 @@ ALTER TABLE `victim`
 --
 ALTER TABLE `conditionhistory`
   MODIFY `ConditionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `disaster`
+--
+ALTER TABLE `disaster`
+  MODIFY `DisasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `disasterconditionhistory`
+--
+ALTER TABLE `disasterconditionhistory`
+  MODIFY `DisasterConditionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `needshistory`

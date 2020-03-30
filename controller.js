@@ -146,6 +146,75 @@ exports.victimNeedHistory = function (req, res) {
 exports.shelterList = function (req, res) {
     connection.query(`SELECT ShelterID, Name, City, Latitude, Longitude
         FROM shelter`, function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        }
+    );
+};
+
+exports.register = function (req, res) {
+    let id = req.body.id;
+    let password = req.body.password;
+
+    connection.query(
+        `INSERT INTO user (UserID, Password) VALUES (?,?)`,
+        [id, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.login = function (req, res) {
+    let id = req.body.id;
+    let password = req.body.password;
+
+    connection.query(
+        `SELECT * FROM user WHERE UserID = ? AND Password = ?`,
+        [id, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.addShelter = function (req, res) {
+    let name = req.body.name;
+    let district = req.body.district;
+    let city = req.body.city;
+    let province = req.body.province;
+    let country = req.body.country;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
+
+    connection.query(
+      `INSERT INTO shelter (Name, District, City, Province, Country, Latitude, Longitude) VALUES (?,?,?,?,?,?,?)`,
+      [name, district, city, province, country, latitude, longitude], function(error, rows, fields) {
+        if (error) {
+          console.log(error);
+          response.fail(INTERNAL_ERROR, res);
+        } else {
+          response.ok(rows, res);
+        }
+      }
+    );
+};
+
+exports.disasterList = function (req, res) {
+    connection.query(`SELECT * FROM disaster`, 
+    function (error, rows, fields) {
         if (error) {
             console.log(error)
             response.fail(INTERNAL_ERROR, res)
@@ -154,6 +223,61 @@ exports.shelterList = function (req, res) {
         }
     });
 };
+
+exports.addDisaster = function (req, res) {
+    let name = req.body.name;
+    let scale = req.body.scale;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
+
+    connection.query(
+        `INSERT INTO disaster (Name, Scale, Latitude, Longitude) values (?, ?, ?, ?)`,
+        [name, scale, latitude, longitude], 
+        function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.faile(INTERNAL_ERROR, res);
+            }
+            else{
+                response.ok(rows, res);
+            }
+        }
+    )
+}
+
+exports.updateVictimShelter = function (req, res) {
+    let id = req.body.id;
+    let shelterId = req.body.shelterId;
+
+    connection.query(
+        `INSERT INTO ShelterHistory (VictimID, ShelterID) VALUES (?,?)`, [id, shelterId], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.updateVictimCondition = function (req, res) {
+    let id = req.body.id;
+    let conditionName = req.body.conditionName;
+    let conditionDesc = req.body.conditionDesc;
+    let conditionStatus = req.body.conditionStatus;
+
+    connection.query(
+        `INSERT INTO ConditionHistory (VictimID, ConditionName, ConditionDesc, ConditionStatus) VALUES (?,?,?,?)`, [id, conditionName, conditionDesc, conditionStatus], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
