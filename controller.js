@@ -262,6 +262,24 @@ exports.updateVictimNeeds = function (req, res) {
     );
 };
 
+exports.updateDisasterConditions = function (req, res) {
+    let id = req.body.id;
+    let disasterTitle = req.body.disasterTitle;
+    let disasterDesc = req.body.disasterDesc;
+    let disasterStatus = req.body.disasterStatus;
+
+    connection.query(
+        `INSERT INTO DisasterConditionHistory (DisasterConditionID, DisasterConditionTitle, DisasterConditionDesc, DisasterConditionStatus) VALUES (?,?,?,?)`, [id, disasterTitle, disasterDesc, disasterStatus], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
 };
