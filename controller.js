@@ -111,7 +111,7 @@ exports.victimConditionHistory = function (req, res) {
     if (id) {
         connection.query(`SELECT ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
             FROM ConditionHistory
-            WHERE VictimID = ?`, [id], function (error, rows, fields) {
+            WHERE VictimID = ? ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 response.fail(INTERNAL_ERROR, res)
@@ -130,7 +130,7 @@ exports.victimNeedHistory = function (req, res) {
     if (id) {
         connection.query(`SELECT NeedsDesc AS 'Needs', Timestamp
             FROM NeedsHistory
-            WHERE VictimID = ?`, [id], function (error, rows, fields) {
+            WHERE VictimID = ? ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 response.fail(INTERNAL_ERROR, res)
