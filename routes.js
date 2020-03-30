@@ -22,11 +22,21 @@ module.exports = function (app) {
     app.route('/victim/history/shelter')
         .get(cntlr.victimShelterHistory);
 
+    app.route('/victim/history/shelter')
+        .post(cntlr.updateVictimShelter);
+
     app.route('/victim/history/condition')
         .get(cntlr.victimConditionHistory);
 
+    app.route('/victim/history/condition')
+        .post(cntlr.updateVictimCondition);
+
+
     app.route('/victim/history/need')
         .get(cntlr.victimNeedHistory);
+    
+    app.route('/victim/history/need')
+        .post(cntlr.updateVictimNeeds);
 
     // Shelter API
     app.route('/shelter')
