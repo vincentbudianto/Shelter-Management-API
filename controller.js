@@ -146,13 +146,48 @@ exports.victimNeedHistory = function (req, res) {
 exports.shelterList = function (req, res) {
     connection.query(`SELECT ShelterID, Name, City, Latitude, Longitude
         FROM shelter`, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            response.fail(INTERNAL_ERROR, res)
-        } else {
-            response.ok(rows, res)
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
         }
-    });
+    );
+};
+
+exports.register = function (req, res) {
+    let id = req.body.id;
+    let password = req.body.password;
+
+    connection.query(
+        `INSERT INTO user (UserID, Password) VALUES (?,?,?,?,?,?,?)`,
+        [id, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.login = function (req, res) {
+    let id = req.body.id;
+    let password = req.body.password;
+
+    connection.query(
+        `SELECT * FROM user WHERE UserID = ? AND Password = ?`,
+        [id, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
 };
 
 exports.addShelter = function (req, res) {
