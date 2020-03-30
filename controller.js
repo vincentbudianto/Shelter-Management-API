@@ -161,7 +161,7 @@ exports.register = function (req, res) {
     let password = req.body.password;
 
     connection.query(
-        `INSERT INTO user (UserID, Password) VALUES (?,?,?,?,?,?,?)`,
+        `INSERT INTO user (UserID, Password) VALUES (?,?)`,
         [id, password], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -200,7 +200,7 @@ exports.addShelter = function (req, res) {
     let longitude = req.body.longitude;
 
     connection.query(
-      `INSERT INTO shelter (Name, District, City, Province, Country, Latitude, Longitude) values (?,?,?,?,?,?,?)`,
+      `INSERT INTO shelter (Name, District, City, Province, Country, Latitude, Longitude) VALUES (?,?,?,?,?,?,?)`,
       [name, district, city, province, country, latitude, longitude], function(error, rows, fields) {
         if (error) {
           console.log(error);
@@ -209,6 +209,56 @@ exports.addShelter = function (req, res) {
           response.ok(rows, res);
         }
       }
+    );
+};
+
+exports.updateVictimShelter = function (req, res) {
+    let id = req.body.id;
+    let shelterId = req.body.shelterId;
+
+    connection.query(
+        `INSERT INTO ShelterHistory (VictimID, ShelterID) VALUES (?,?)`, [id, shelterId], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.updateVictimCondition = function (req, res) {
+    let id = req.body.id;
+    let conditionName = req.body.conditionName;
+    let conditionDesc = req.body.conditionDesc;
+    let conditionStatus = req.body.conditionStatus;
+
+    connection.query(
+        `INSERT INTO ConditionHistory (VictimID, ConditionName, ConditionDesc, ConditionStatus) VALUES (?,?,?,?)`, [id, conditionName, conditionDesc, conditionStatus], function (error, rows, fields) {
+        if (error) {
+            console.log(error);
+            response.fail(INTERNAL_ERROR, res);
+        } else {
+            response.ok(rows, res);
+        }
+    }
+    );
+};
+
+exports.updateVictimNeeds = function (req, res) {
+    let id = req.body.id;
+    let NeedsDesc = req.body.conditionName;
+
+    connection.query(
+        `INSERT INTO NeedsHistory (VictimID, NeedsDesc) VALUES (?,?)`, [id, NeedsDesc], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
     );
 };
 
