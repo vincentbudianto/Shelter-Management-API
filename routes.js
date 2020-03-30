@@ -34,5 +34,8 @@ module.exports = function (app) {
 
     // Disaster API
     app.route('/disaster')
+    .get(cntlr.disasterList)
+
+    app.route('/disaster')
         .post(cntlr.addDisaster);
 };
