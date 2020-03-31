@@ -4,6 +4,27 @@ var response = require('./res');
 var connection = require('./conn');
 const INTERNAL_ERROR = 'Internal Server Error';
 
+exports.createVictim = function (req, res) {
+    var nik = req.body.nik;
+    var nokk = req.body.nokk;
+    var name = req.body.name;
+    var age = req.body.age;
+    var ids = req.body.shelterid;
+    var photo = req.file.filename;
+
+    connection.query(
+        `INSERT INTO victim (NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?)`,
+        [nik, nokk, name, age, photo, ids], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
 exports.victimByShelter = function (req, res) {
     const { id } = req.query;
 

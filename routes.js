@@ -2,6 +2,8 @@
 
 module.exports = function (app) {
     var cntlr = require('./controller');
+    var multer = require('multer');
+    var upload = multer({ dest: 'uploads/' });
 
     app.route('/')
         .get(cntlr.index);
@@ -27,6 +29,9 @@ module.exports = function (app) {
 
     app.route('/victim/history/need')
         .get(cntlr.victimNeedHistory);
+    
+    app.route('/victim')
+        .post(upload.single('photo'), cntlr.createVictim);
 
     // Shelter API
     app.route('/shelter')
