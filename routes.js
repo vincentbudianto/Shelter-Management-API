@@ -7,6 +7,12 @@ module.exports = function (app) {
         .get(cntlr.index);
 
     // Victim API
+    app.route('/victim/count')
+        .get(cntlr.victimCount);
+
+    app.route('/victim/count/shelter')
+        .get(cntlr.victimCountByShelter);
+
     app.route('/victim/search/shelter')
         .get(cntlr.victimByShelter);
 

@@ -4,6 +4,37 @@ var response = require('./res');
 var connection = require('./conn');
 const INTERNAL_ERROR = 'Internal Server Error';
 
+exports.victimCount = function (req, res) {
+    connection.query(`SELECT COUNT(*) AS VictimCount
+        FROM victim`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows[0], res)
+        }
+    });
+};
+
+exports.victimCountByShelter = function (req, res) {
+    const { id } = req.query;
+
+    if (id) {
+        connection.query(`SELECT COUNT(*) AS VictimCount
+            FROM victim LEFT JOIN shelter ON victim.CurrentShelterID=shelter.ShelterID
+            WHERE CurrentShelterID = ?`, [id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows[0], res)
+            }
+        });
+    } else {
+        response.fail('id not found', res)
+    }
+};
+
 exports.victimByShelter = function (req, res) {
     const { id } = req.query;
 
