@@ -166,7 +166,7 @@ exports.register = function (req, res) {
     let photo = req.body.photo;
 
     connection.query(
-        `INSERT INTO user (Username, Password, NIK, NoKK, Name, Age, Photo) VALUES (?,?,?,?,?,?,?)`,
+        `INSERT INTO Staff (Username, Password, NIK, NoKK, Name, Age, Photo) VALUES (?,?,?,?,?,?,?)`,
         [username, password, nik, nokk, name, age, photo], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -183,7 +183,7 @@ exports.login = function (req, res) {
     let password = req.body.password;
 
     connection.query(
-        `SELECT * FROM Staff WHERE Username = ? AND Password = ?`,
+        `SELECT * FROM Staff FULL OUTER JOIN Admin WHERE Username = ? AND Password = ?`,
         [username, password], function (error, rows, fields) {
             if (error) {
                 console.log(error);
