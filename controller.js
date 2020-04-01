@@ -43,6 +43,26 @@ exports.victimByName = function (req, res) {
     }
 };
 
+exports.victimByNoKK = function (req, res){
+    const { nokk } = req.query;
+
+    if (nokk) {
+        const searchNoKK = '%' + nokk + '%'
+        connection.query(`SELECT VictimID, NIK, Name, ConditionStatus
+            FROM victim LEFT JOIN conditionhistory USING (VictimID)
+            WHERE NoKK = ?`, [nokk], function (error, rows) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        });
+    } else {
+        response.fail('nokk not found', res)
+    }
+}
+
 exports.victimByKeyword = function (req, res) {
     const { keyword } = req.query;
 
