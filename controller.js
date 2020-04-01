@@ -313,6 +313,29 @@ exports.updateDisasterConditions = function (req, res) {
     );
 };
 
+exports.configs = function (req, res){
+    connection.query(`SELECT SearchFilter FROM configs`, function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        }
+    );
+}
+exports.updateConfigs = function (req, res){
+    let searchFilter = req.body.SearchFilter;
+    connection.query(`UPDATE configs SET SearchFilter = ?`,[searchFilter], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        }
+    );
+}
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)

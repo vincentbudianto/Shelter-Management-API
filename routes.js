@@ -34,8 +34,15 @@ module.exports = function (app) {
 
     // Disaster API
     app.route('/disaster')
-    .get(cntlr.disasterList)
+    .get(cntlr.disasterList);
 
     app.route('/disaster')
         .post(cntlr.addDisaster);
+
+    // Search Filter
+    app.route('/configs/filter')
+        .get(cntlr.configs);
+    
+    app.route('/configs/filter')
+        .post(cntlr.updateConfigs);
 };
