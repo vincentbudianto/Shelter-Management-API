@@ -146,13 +146,14 @@ exports.victimNeedHistory = function (req, res) {
 exports.shelterList = function (req, res) {
     connection.query(`SELECT ShelterID, Name, City, Latitude, Longitude
         FROM shelter`, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            response.fail(INTERNAL_ERROR, res)
-        } else {
-            response.ok(rows, res)
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
         }
-    });
+    );
 };
 
 exports.register = function (req, res) {
@@ -191,6 +192,28 @@ exports.login = function (req, res) {
                 response.ok(rows, res);
             }
         }
+    );
+};
+
+exports.addShelter = function (req, res) {
+    let name = req.body.name;
+    let district = req.body.district;
+    let city = req.body.city;
+    let province = req.body.province;
+    let country = req.body.country;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
+
+    connection.query(
+      `INSERT INTO shelter (Name, District, City, Province, Country, Latitude, Longitude) values (?,?,?,?,?,?,?)`,
+      [name, district, city, province, country, latitude, longitude], function(error, rows, fields) {
+        if (error) {
+          console.log(error);
+          response.fail(INTERNAL_ERROR, res);
+        } else {
+          response.ok(rows, res);
+        }
+      }
     );
 };
 
