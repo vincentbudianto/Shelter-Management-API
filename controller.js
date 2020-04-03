@@ -178,12 +178,29 @@ exports.register = function (req, res) {
     );
 };
 
-exports.login = function (req, res) {
+exports.loginStaff = function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
 
     connection.query(
-        `SELECT * FROM Staff FULL OUTER JOIN Admin WHERE Username = ? AND Password = ?`,
+        `SELECT * FROM Staff WHERE Username = ? AND Password = ?`,
+        [username, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.loginAdmin = function (req, res) {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    connection.query(
+        `SELECT * FROM Admin WHERE Username = ? AND Password = ?`,
         [username, password], function (error, rows, fields) {
             if (error) {
                 console.log(error);
