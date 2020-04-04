@@ -28,14 +28,29 @@ module.exports = function (app) {
     app.route('/victim/history/need')
         .get(cntlr.victimNeedHistory);
 
+    app.route('/victim/history/shelter')
+        .post(cntlr.updateVictimShelter);
+
+    app.route('/victim/history/condition')
+        .post(cntlr.updateVictimCondition);
+
+    app.route('/victim/history/need')
+        .post(cntlr.updateVictimNeeds);
+
     // Shelter API
     app.route('/shelter')
         .get(cntlr.shelterList);
 
+    app.route('/shelter')
+        .post(cntlr.addShelter);
+
     // Disaster API
     app.route('/disaster')
-    .get(cntlr.disasterList)
+        .get(cntlr.disasterList)
 
     app.route('/disaster')
         .post(cntlr.addDisaster);
+
+    app.route('/disaster/history/condition')
+        .post(cntlr.updateDisasterConditions);
 };

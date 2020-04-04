@@ -213,7 +213,7 @@ exports.addShelter = function (req, res) {
 };
 
 exports.disasterList = function (req, res) {
-    connection.query(`SELECT * FROM disaster`, 
+    connection.query(`SELECT * FROM disaster`,
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -232,7 +232,7 @@ exports.addDisaster = function (req, res) {
 
     connection.query(
         `INSERT INTO disaster (Name, Scale, Latitude, Longitude) values (?, ?, ?, ?)`,
-        [name, scale, latitude, longitude], 
+        [name, scale, latitude, longitude],
         function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -302,7 +302,7 @@ exports.updateDisasterConditions = function (req, res) {
     let disasterStatus = req.body.disasterStatus;
 
     connection.query(
-        `INSERT INTO DisasterConditionHistory (DisasterConditionID, DisasterConditionTitle, DisasterConditionDesc, DisasterConditionStatus) VALUES (?,?,?,?)`, [id, disasterTitle, disasterDesc, disasterStatus], function (error, rows, fields) {
+        `INSERT INTO DisasterConditionHistory (DisasterID, DisasterConditionTitle, DisasterConditionDesc, DisasterConditionStatus) VALUES (?,?,?,?)`, [id, disasterTitle, disasterDesc, disasterStatus], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
