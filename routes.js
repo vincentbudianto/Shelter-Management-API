@@ -32,10 +32,17 @@ module.exports = function (app) {
     app.route('/shelter')
         .get(cntlr.shelterList);
 
+    app.route('/shelter')
+        .post(cntlr.addShelter);
+
     // Disaster API
     app.route('/disaster')
-    .get(cntlr.disasterList)
+        .get(cntlr.disasterList)
 
     app.route('/disaster')
         .post(cntlr.addDisaster);
+
+    // Dashboard API
+    app.route('/dashboard')
+        .get(cntlr.dashboardData);
 };
