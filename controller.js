@@ -147,7 +147,7 @@ exports.shelterList = function (req, res) {
     connection.query
     (`SELECT * 
     FROM shelter 
-    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster 
+    JOIN (SELECT DisasterID, Name as DisasterName, Scale as DisasterScale, Latitude as DisasterLatitude, Longitude as DisasterLongitude FROM disaster) as temp_disaster 
     ON shelter.DisasterID = temp_disaster.DisasterID`, 
     function (error, rows, fields) {
         if (error) {
@@ -229,9 +229,9 @@ exports.dashboardData = function (req, res) {
                 (
                     select * 
                     from (
-                            (select shelter.ShelterID as ShelterID, shelter.Name ShelterName, shelter.Latitude as ShelterLatitude, shelter.Longitude as ShelterLongitude 
+                            (select shelter.ShelterID as ShelterID
                             from shelter) as shelter_dash JOIN
-                            ( select disaster.DisasterID as DisasterID, disaster.Name as DisasterName, disaster.Scale as DisasterScale, disaster.Latitude as DisasterLatitude, disaster.Longitude as DisasterLongitude
+                            ( select disaster.DisasterID as DisasterID
                             from disaster) as disaster_dash
                         on shelter_dash.ShelterID = disaster_dash.DisasterID	
                     )
