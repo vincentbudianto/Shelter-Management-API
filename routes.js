@@ -44,6 +44,9 @@ module.exports = function (app) {
     app.route('/shelter')
         .post(cntlr.addShelter);
 
+    app.route('/shelter/needs')
+        .get(cntlr.shelterNeeds);
+
     // Disaster API
     app.route('/disaster')
         .get(cntlr.disasterList)

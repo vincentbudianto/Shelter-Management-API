@@ -313,6 +313,21 @@ exports.updateDisasterConditions = function (req, res) {
     );
 };
 
+exports.shelterNeeds = function (req, res) {
+    const {id} = req.query;
+
+    connection.query(
+        `SELECT * FROM (SELECT VictimID, Name, NeedsDesc FROM Victim NATURAL JOIN NeedsHistory 
+        WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY VictimID`, [id], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
