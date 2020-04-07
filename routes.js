@@ -2,6 +2,7 @@
 
 module.exports = function (app) {
     var cntlr = require('./controller');
+    var accountValidation = require('./src/accountValidation');
 
     app.route('/')
         .get(cntlr.index);
@@ -28,6 +29,15 @@ module.exports = function (app) {
     app.route('/victim/history/need')
         .get(cntlr.victimNeedHistory);
 
+    app.route('/victim/history/shelter')
+        .post(cntlr.updateVictimShelter);
+
+    app.route('/victim/history/condition')
+        .post(cntlr.updateVictimCondition);
+
+    app.route('/victim/history/need')
+        .post(cntlr.updateVictimNeeds);
+
     // Shelter API
     app.route('/shelter')
         .get(cntlr.shelterList);
@@ -45,4 +55,15 @@ module.exports = function (app) {
     // Dashboard API
     app.route('/dashboard')
         .get(cntlr.dashboardData);
+
+    app.route('/disaster/history/condition')
+        .post(cntlr.updateDisasterConditions);
+
+    // Validation API
+    app.route('/check/staff')
+        .get(accountValidation.isStaff);
+    app.route('/check/shelter/staff')
+        .get(accountValidation.isStaffShelter);
+    app.route('/check/admin')
+        .get(accountValidation.isAdmin);
 };

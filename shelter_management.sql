@@ -25,6 +25,14 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user`
+--
+CREATE TABLE `user` (
+  `UserID` int(11) NOT NULL,
+  `Password` varchar(25) NOT NULL
+) ENGINE = InnoDB DEFAULT CHARSET = latin1;
+
+--
 -- Table structure for table `conditionhistory`
 --
 
