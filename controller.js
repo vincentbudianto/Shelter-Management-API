@@ -313,6 +313,53 @@ exports.updateDisasterConditions = function (req, res) {
     );
 };
 
+exports.getStaff = function (id, callback) {
+    connection.query(`SELECT StaffID
+        FROM staff
+        WHERE StaffID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            return callback(INTERNAL_ERROR);
+        } else {
+            if (rows[0]) {
+                return callback(null, { isStaff: true });
+            } else {
+                return callback(null, { isStaff: false });
+            }
+        }
+    });
+}
+
+exports.getStaffShelter = function (staffId, shelterId, callback) {
+    connection.query(`SELECT StaffID
+        FROM staff JOIN shelter ON staff.CurrentShelterID=shelter.ShelterID
+        WHERE StaffID = ? AND ShelterID = ?`, [staffId, shelterId], function (error, rows, fields) {
+        if (error) {
+            return callback(INTERNAL_ERROR);
+        } else {
+            if (rows[0]) {
+                return callback(null, { isStaffShelter: true });
+            } else {
+                return callback(null, { isStaffShelter: false });
+            }
+        }
+    });
+}
+
+exports.getAdmin = function (id, callback) {
+    connection.query(`SELECT AdminID
+        FROM admin
+        WHERE AdminID = ?`, [id], function (error, rows, fields) {
+        if (error) {
+            return callback(INTERNAL_ERROR);
+        } else {
+            if (rows[0]) {
+                return callback(null, { isAdmin: true });
+            } else {
+                return callback(null, { isAdmin: false });
+            }
+        }
+    });
+}
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
