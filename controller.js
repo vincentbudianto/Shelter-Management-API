@@ -313,7 +313,7 @@ exports.updateDisasterConditions = function (req, res) {
     );
 };
 
-exports.getStaff = function (id, callback) {
+exports.isStaff = function (id, callback) {
     connection.query(`SELECT StaffID
         FROM staff
         WHERE StaffID= ?`, [id], function (error, rows, fields) {
@@ -329,7 +329,7 @@ exports.getStaff = function (id, callback) {
     });
 }
 
-exports.getStaffShelter = function (staffId, shelterId, callback) {
+exports.isStaffShelter = function (staffId, shelterId, callback) {
     connection.query(`SELECT StaffID
         FROM staff JOIN shelter ON staff.CurrentShelterID=shelter.ShelterID
         WHERE StaffID = ? AND ShelterID = ?`, [staffId, shelterId], function (error, rows, fields) {
@@ -345,7 +345,7 @@ exports.getStaffShelter = function (staffId, shelterId, callback) {
     });
 }
 
-exports.getAdmin = function (id, callback) {
+exports.isAdmin = function (id, callback) {
     connection.query(`SELECT AdminID
         FROM admin
         WHERE AdminID = ?`, [id], function (error, rows, fields) {
