@@ -147,7 +147,7 @@ exports.shelterList = function (req, res) {
     connection.query
     (`SELECT * 
     FROM shelter 
-    JOIN (SELECT DisasterID, Name as DisasterName, Scale as DisasterScale, Latitude as DisasterLatitude, Longitude as DisasterLongitude FROM disaster) as temp_disaster 
+    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster 
     ON shelter.DisasterID = temp_disaster.DisasterID`, 
     function (error, rows, fields) {
         if (error) {
