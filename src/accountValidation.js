@@ -7,7 +7,7 @@ const isStaff = (req, res) => {
     const { id } = req.query;
 
     if (id) {
-        dbManager.getStaff(id, (err, data) => {
+        dbManager.isStaff(id, (err, data) => {
             if (err) {
                 console.log(err)
                 response.fail(err, res)
@@ -24,7 +24,7 @@ const isStaffShelter = (req, res) => {
     const { staffId, shelterId } = req.query;
 
     if (staffId && shelterId) {
-        dbManager.getStaffShelter(staffId, shelterId, (err, data) => {
+        dbManager.isStaffShelter(staffId, shelterId, (err, data) => {
             if (err) {
                 console.log(err)
                 response.fail(err, res)
@@ -41,7 +41,7 @@ const isAdmin = (req, res) => {
     const { id } = req.query;
 
     if (id) {
-        dbManager.getAdmin(id, (err, data) => {
+        dbManager.isAdmin(id, (err, data) => {
             if (err) {
                 console.log(err)
                 response.fail(err, res)
