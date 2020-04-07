@@ -2,6 +2,7 @@
 
 module.exports = function (app) {
     var cntlr = require('./controller');
+    var accountValidation = require('./src/accountValidation');
 
     app.route('/')
         .get(cntlr.index);
@@ -53,4 +54,12 @@ module.exports = function (app) {
 
     app.route('/disaster/history/condition')
         .post(cntlr.updateDisasterConditions);
+
+    // Validation API
+    app.route('/check/staff')
+        .get(accountValidation.isStaff);
+    app.route('/check/shelter/staff')
+        .get(accountValidation.isStaffShelter);
+    app.route('/check/admin')
+        .get(accountValidation.isAdmin);
 };
