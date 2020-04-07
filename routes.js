@@ -52,6 +52,10 @@ module.exports = function (app) {
     app.route('/disaster')
         .post(cntlr.addDisaster);
 
+    // Dashboard API
+    app.route('/dashboard')
+        .get(cntlr.dashboardData);
+
     app.route('/disaster/history/condition')
         .post(cntlr.updateDisasterConditions);
 

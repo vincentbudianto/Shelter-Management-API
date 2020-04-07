@@ -144,16 +144,19 @@ exports.victimNeedHistory = function (req, res) {
 };
 
 exports.shelterList = function (req, res) {
-    connection.query(`SELECT ShelterID, Name, City, Latitude, Longitude
-        FROM shelter`, function (error, rows, fields) {
-            if (error) {
-                console.log(error)
-                response.fail(INTERNAL_ERROR, res)
-            } else {
-                response.ok(rows, res)
-            }
+    connection.query
+    (`SELECT * 
+    FROM shelter 
+    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster 
+    ON shelter.DisasterID = temp_disaster.DisasterID`, 
+    function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
         }
-    );
+    });
 };
 
 exports.register = function (req, res) {
@@ -191,6 +194,7 @@ exports.login = function (req, res) {
 };
 
 exports.addShelter = function (req, res) {
+    let disasterID = req.body.disasterID;
     let name = req.body.name;
     let district = req.body.district;
     let city = req.body.city;
@@ -200,8 +204,8 @@ exports.addShelter = function (req, res) {
     let longitude = req.body.longitude;
 
     connection.query(
-      `INSERT INTO shelter (Name, District, City, Province, Country, Latitude, Longitude) VALUES (?,?,?,?,?,?,?)`,
-      [name, district, city, province, country, latitude, longitude], function(error, rows, fields) {
+      `INSERT INTO shelter (DisasterID, Name, District, City, Province, Country, Latitude, Longitude) values (?,?,?,?,?,?,?,?)`,
+      [disasterID, name, district, city, province, country, latitude, longitude], function(error, rows, fields) {
         if (error) {
           console.log(error);
           response.fail(INTERNAL_ERROR, res);
@@ -244,6 +248,40 @@ exports.addDisaster = function (req, res) {
         }
     )
 }
+
+exports.dashboardData = function (req, res) {
+    connection.query(
+        `
+        select * 
+        from (
+            (   
+                (   
+                    select VictimID, Age as VictimAge, CurrentShelterID
+                    from victim
+                ) as victim_dashboard
+                JOIN
+                (
+                    select * 
+                    from (
+                            (select shelter.ShelterID as ShelterID
+                            from shelter) as shelter_dash JOIN
+                            ( select disaster.DisasterID as DisasterID
+                            from disaster) as disaster_dash
+                        on shelter_dash.ShelterID = disaster_dash.DisasterID	
+                    )
+                ) as shelter_disaster_dashboard
+                on victim_dashboard.CurrentShelterID = shelter_disaster_dashboard.ShelterID
+            )
+        );
+        `,
+    function (error, rows){
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    })
 
 exports.updateVictimShelter = function (req, res) {
     let id = req.body.id;
