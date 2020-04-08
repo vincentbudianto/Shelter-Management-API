@@ -282,6 +282,7 @@ exports.dashboardData = function (req, res) {
             response.ok(rows, res)
         }
     })
+}
 
 exports.updateVictimShelter = function (req, res) {
     let id = req.body.id;
