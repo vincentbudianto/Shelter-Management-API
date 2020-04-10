@@ -105,42 +105,55 @@ exports.victimShelterHistory = function (req, res) {
     }
 };
 
-exports.victimConditionHistory = function (req, res) {
-    const { id } = req.query;
-
-    if (id) {
-        connection.query(`SELECT ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
-            FROM ConditionHistory
-            WHERE VictimID = ?`, [id], function (error, rows, fields) {
-            if (error) {
-                console.log(error)
-                response.fail(INTERNAL_ERROR, res)
-            } else {
-                response.ok(rows, res)
-            }
-        });
-    } else {
-        response.fail('id not found', res)
-    }
+exports.getVictimConditionHistory = function (id, callback) {
+    connection.query(`SELECT ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
+        FROM ConditionHistory
+        WHERE VictimID = ?`, [id], function (error, rows, fields) {
+        if (error) {
+            return callback(INTERNAL_ERROR)
+        } else {
+            return callback(null, rows)
+        }
+    });
 };
 
-exports.victimNeedHistory = function (req, res) {
-    const { id } = req.query;
+exports.getVictimActiveConditionHistory = function (id, callback) {
+    connection.query(`SELECT *
+        FROM ConditionHistory
+        WHERE VictimID = ? AND ConditionStatus = 1`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR)
+        } else {
+            return callback(null, rows)
+        }
+    });
+};
 
-    if (id) {
-        connection.query(`SELECT NeedsDesc AS 'Needs', Timestamp
-            FROM NeedsHistory
-            WHERE VictimID = ?`, [id], function (error, rows, fields) {
+exports.getVictimNeedHistory = function (id, callback) {
+    connection.query(`SELECT NeedsDesc AS 'Needs', Timestamp
+        FROM NeedsHistory
+        WHERE VictimID = ?`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
-                response.fail(INTERNAL_ERROR, res)
+                return callback(INTERNAL_ERROR);
             } else {
-                response.ok(rows, res)
+                return callback(null, rows);
             }
-        });
-    } else {
-        response.fail('id not found', res)
-    }
+    });
+};
+
+exports.getVictimActiveNeedHistory = function (id, callback) {
+    connection.query(`SELECT *
+        FROM NeedsHistory
+        WHERE VictimID = ? AND NeedStatus = 1`, [id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, rows);
+            }
+    });
 };
 
 exports.shelterList = function (req, res) {
@@ -282,6 +295,7 @@ exports.dashboardData = function (req, res) {
             response.ok(rows, res)
         }
     })
+}
 
 exports.updateVictimShelter = function (req, res) {
     let id = req.body.id;
@@ -395,6 +409,50 @@ exports.isAdmin = function (id, callback) {
             } else {
                 return callback(null, { isAdmin: false });
             }
+        }
+    });
+}
+
+exports.getAllVictim = function (callback) {
+    connection.query(`SELECT *
+        FROM victim`, function (error, rows, fields) {
+        if (error) {
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getAllShelterWithStock = function (callback) {
+    connection.query(`SELECT *
+        FROM shelterStock LEFT JOIN shelter USING (ShelterID)`, function (error, rows, fields) {
+        if (error) {
+            console.log(error);
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getAllRecommendation = function (callback) {
+    connection.query(`SELECT VictimID, NIK, victim.Name AS Name, NeedDesc, StockID,
+            CurrentShelterID, CurrentShelterName, RecommendedShelterID, RecommendedShelterName, Urgency
+        FROM victim RIGHT JOIN (SELECT *
+            FROM needsHistory
+            WHERE NeedStatus = 1) AS ActiveNeeds
+            USING (VictimID) JOIN (SELECT StockID, ShelterID AS RecommendedShelterID, shelter.Name AS RecommendedShelterName
+            FROM shelterStock LEFT JOIN shelter
+            USING (ShelterID)) AS AvailableStock
+            ON NeedStockID=AvailableStock.StockID JOIN (SELECT ShelterID, Name AS CurrentShelterName
+            FROM shelter) AS ShelterList
+            ON CurrentShelterID=ShelterList.ShelterID`, function (error, rows, fields) {
+        if (error) {
+            console.log(error);
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
         }
     });
 }

@@ -3,6 +3,8 @@
 module.exports = function (app) {
     var cntlr = require('./controller');
     var accountValidation = require('./src/accountValidation');
+    var placementRecommendation = require('./src/placementRecommendation');
+    var victim = require('./src/victim')
 
     app.route('/')
         .get(cntlr.index);
@@ -24,10 +26,10 @@ module.exports = function (app) {
         .get(cntlr.victimShelterHistory);
 
     app.route('/victim/history/condition')
-        .get(cntlr.victimConditionHistory);
+        .get(victim.victimConditionHistory);
 
     app.route('/victim/history/need')
-        .get(cntlr.victimNeedHistory);
+        .get(victim.victimNeedHistory);
 
     app.route('/victim/history/shelter')
         .post(cntlr.updateVictimShelter);
@@ -66,4 +68,8 @@ module.exports = function (app) {
         .get(accountValidation.isStaffShelter);
     app.route('/check/admin')
         .get(accountValidation.isAdmin);
+
+    // Placement Recommendation
+    app.route('/recommendation')
+        .get(placementRecommendation.getAllRecommendation);
 };
