@@ -163,11 +163,13 @@ exports.register = function (req, res) {
     let nokk = req.body.nokk;
     let name = req.body.name;
     let age = req.body.age;
-    let photo = req.body.photo;
+	let shelterid = req.body.shelterid;
+    let photo = req.file.filename;
+	let type = "staff";
 
     connection.query(
-        `INSERT INTO Staff (Username, Password, NIK, NoKK, Name, Age, Photo) VALUES (?,?,?,?,?,?,?)`,
-        [username, password, nik, nokk, name, age, photo], function (error, rows, fields) {
+        `INSERT INTO Account (Username, Password, Type, NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?,?,?,?)`,
+        [username, password, type, nik, nokk, name, age, photo, shelterid], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -178,29 +180,12 @@ exports.register = function (req, res) {
     );
 };
 
-exports.loginStaff = function (req, res) {
+exports.login = function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
 
     connection.query(
-        `SELECT * FROM Staff WHERE Username = ? AND Password = ?`,
-        [username, password], function (error, rows, fields) {
-            if (error) {
-                console.log(error);
-                response.fail(INTERNAL_ERROR, res);
-            } else {
-                response.ok(rows, res);
-            }
-        }
-    );
-};
-
-exports.loginAdmin = function (req, res) {
-    let username = req.body.username;
-    let password = req.body.password;
-
-    connection.query(
-        `SELECT * FROM Admin WHERE Username = ? AND Password = ?`,
+        `SELECT * FROM Account WHERE Username = ? AND Password = ?`,
         [username, password], function (error, rows, fields) {
             if (error) {
                 console.log(error);
