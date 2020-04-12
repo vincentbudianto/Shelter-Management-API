@@ -173,12 +173,19 @@ exports.shelterList = function (req, res) {
 };
 
 exports.register = function (req, res) {
-    let id = req.body.id;
+    let username = req.body.username;
     let password = req.body.password;
+    let nik = req.body.nik;
+    let nokk = req.body.nokk;
+    let name = req.body.name;
+    let age = req.body.age;
+	let shelterid = req.body.shelterid;
+    let photo = req.file.filename;
+	let type = "staff";
 
     connection.query(
-        `INSERT INTO user (UserID, Password) VALUES (?,?)`,
-        [id, password], function (error, rows, fields) {
+        `INSERT INTO Account (Username, Password, Type, NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?,?,?,?)`,
+        [username, password, type, nik, nokk, name, age, photo, shelterid], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -190,12 +197,12 @@ exports.register = function (req, res) {
 };
 
 exports.login = function (req, res) {
-    let id = req.body.id;
+    let username = req.body.username;
     let password = req.body.password;
 
     connection.query(
-        `SELECT * FROM user WHERE UserID = ? AND Password = ?`,
-        [id, password], function (error, rows, fields) {
+        `SELECT * FROM Account WHERE Username = ? AND Password = ?`,
+        [username, password], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
