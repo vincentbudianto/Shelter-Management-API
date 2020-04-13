@@ -49,12 +49,18 @@ module.exports = function (app) {
     app.route('/shelter')
         .post(cntlr.addShelter);
 		
+	app.route('/sheltername')
+		.get(cntlr.shelterListName);
+		
 	// Login & Register API
     app.route('/register')
         .post(upload.single('photo'), cntlr.register);
         
 	app.route('/login')
 		.post(cntlr.login);
+		
+	app.route('/username')
+		.post(cntlr.checkUsername);
 
     // Disaster API
     app.route('/disaster')
