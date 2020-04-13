@@ -10,7 +10,7 @@ exports.createVictim = function (req, res) {
     var name = req.body.name;
     var age = req.body.age;
     var ids = req.body.shelterid;
-    var photo = req.file.filename;
+    var photo;
 	if (req.file != null) {
 		photo = req.file.filename;
 	} else {
