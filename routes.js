@@ -48,6 +48,9 @@ module.exports = function (app) {
 
     app.route('/shelter')
         .post(cntlr.addShelter);
+		
+	app.route('/sheltername')
+		.get(cntlr.shelterListName);
 
     app.route('/shelter/history/conditon')
         .post(cntlr.updateShelterCondition);
@@ -61,6 +64,9 @@ module.exports = function (app) {
 
 	app.route('/login')
 		.post(cntlr.login);
+		
+	app.route('/username')
+		.post(cntlr.checkUsername);
 
     // Disaster API
     app.route('/disaster')

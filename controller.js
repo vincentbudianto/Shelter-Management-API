@@ -172,6 +172,19 @@ exports.shelterList = function (req, res) {
     });
 };
 
+exports.shelterListName = function (req, res) {
+    connection.query
+    (`SELECT * FROM shelter`, 
+    function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
 exports.register = function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
@@ -180,7 +193,12 @@ exports.register = function (req, res) {
     let name = req.body.name;
     let age = req.body.age;
 	let shelterid = req.body.shelterid;
-    let photo = req.file.filename;
+    var photo;
+	if (req.file != null) {
+		photo = req.file.filename;
+	} else {
+		photo = "";
+	}
 	let type = "staff";
 
     connection.query(
@@ -203,6 +221,22 @@ exports.login = function (req, res) {
     connection.query(
         `SELECT * FROM Account WHERE Username = ? AND Password = ?`,
         [username, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.checkUsername = function (req, res) {
+    let username = req.body.username;
+
+    connection.query(
+        `SELECT * FROM Account WHERE Username = ?`,
+        [username], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
