@@ -159,9 +159,7 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
 exports.shelterList = function (req, res) {
     connection.query
     (`SELECT * 
-    FROM shelter 
-    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster 
-    ON shelter.DisasterID = temp_disaster.DisasterID`, 
+    FROM shelter`, 
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -371,6 +369,76 @@ exports.updateDisasterConditions = function (req, res) {
         }
     );
 };
+
+exports.getShelter = function (id, callback) {
+    connection.query(`SELECT ShelterID, shelter.Name AS Name, District, City, Province, Country, shelter.Longitude, shelter.Latitude,
+            DisasterID, disaster.Name AS DisasterName, Scale
+        FROM shelter LEFT JOIN disaster USING (DisasterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows[0]);
+        }
+    });
+}
+
+exports.getShelterVictimList = function (id, callback) {
+    connection.query(`SELECT NIK, victim.Name, Status
+        FROM shelter JOIN victim ON shelter.ShelterID=victim.CurrentShelterID
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getShelterStock = function (id, callback) {
+    connection.query(`SELECT StockID AS Id, shelterstock.Name, Description, Amount
+        FROM shelter JOIN shelterstock USING (ShelterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getShelterConditionHistory = function (id, callback) {
+    connection.query(`SELECT ShelterConditionID AS Id,
+            ShelterConditionTitle AS Title,
+            ShelterConditionDesc AS Description, 
+            ShelterConditionStatus AS Status,
+            Timestamp, UpdatedBy
+        FROM shelter JOIN shelterconditionhistory USING (ShelterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getShelterNeedHistory = function (id, callback) {
+    connection.query(`SELECT ShelterNeedHistoryID AS Id, ShelterNeedDesc AS Description, NeedStockID, Timestamp, UpdatedBy
+        FROM shelter JOIN shelterneedshistory USING (ShelterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
 
 exports.shelterNeeds = function (req, res) {
     const {id} = req.query;

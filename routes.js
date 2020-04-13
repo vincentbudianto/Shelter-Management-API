@@ -7,6 +7,7 @@ module.exports = function (app) {
     var accountValidation = require('./src/accountValidation');
     var placementRecommendation = require('./src/placementRecommendation');
     var victim = require('./src/victim');
+    var shelter = require('./src/shelter');
 
     app.route('/')
         .get(cntlr.index);
@@ -44,7 +45,17 @@ module.exports = function (app) {
 
     // Shelter API
     app.route('/shelter')
+        .get(shelter.getShelter);
+    app.route('/shelter/all')
         .get(cntlr.shelterList);
+    app.route('/shelter/victimList')
+        .get(shelter.getShelterVictimList);
+    app.route('/shelter/stock')
+        .get(shelter.getShelterStock);
+    app.route('/shelter/conditions')
+        .get(shelter.getShelterConditionHistory);
+    app.route('/shelter/needs')
+        .get(shelter.getShelterNeedHistory);
 		
     app.route('/shelter')
         .post(cntlr.addShelter);
