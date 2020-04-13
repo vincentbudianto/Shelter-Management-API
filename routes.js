@@ -2,9 +2,11 @@
 
 module.exports = function (app) {
     var cntlr = require('./controller');
+    var multer = require('multer');
+    var upload = multer({ dest: 'uploads/' });
     var accountValidation = require('./src/accountValidation');
     var placementRecommendation = require('./src/placementRecommendation');
-    var victim = require('./src/victim')
+    var victim = require('./src/victim');
 
     app.route('/')
         .get(cntlr.index);
@@ -43,13 +45,20 @@ module.exports = function (app) {
     // Shelter API
     app.route('/shelter')
         .get(cntlr.shelterList);
-
+		
     app.route('/shelter')
         .post(cntlr.addShelter);
+		
+	// Login & Register API
+    app.route('/register')
+        .post(upload.single('photo'), cntlr.register);
+        
+	app.route('/login')
+		.post(cntlr.login);
 
     // Disaster API
     app.route('/disaster')
-        .get(cntlr.disasterList)
+        .get(cntlr.disasterList);
 
     app.route('/disaster')
         .post(cntlr.addDisaster);
