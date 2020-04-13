@@ -42,6 +42,9 @@ module.exports = function (app) {
     app.route('/victim/history/need')
         .post(cntlr.updateVictimNeeds);
 
+     app.route('/victim')
+        .post(upload.single('photo'), cntlr.createVictim);
+
     // Shelter API
     app.route('/shelter')
         .get(cntlr.shelterList);
