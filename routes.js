@@ -96,4 +96,11 @@ module.exports = function (app) {
     // Placement Recommendation
     app.route('/recommendation')
         .get(placementRecommendation.getAllRecommendation);
+		
+	// Account API
+	app.route('/account')
+		.get(cntlr.listAccount);
+		
+	app.route('/account')
+		.post(cntlr.assignStaff);
 };

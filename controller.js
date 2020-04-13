@@ -564,6 +564,35 @@ exports.getAllRecommendation = function (callback) {
     });
 }
 
+exports.listAccount = function (req, res) {
+    connection.query
+    (`SELECT AccountID, Username, Name FROM account WHERE Type = 'staff'`, 
+    function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.assignStaff = function (req, res) {
+	let aid = req.body.accountid;
+	let sid = req.body.shelterid;
+	
+    connection.query
+    (`UPDATE account SET CurrentShelterID = ? WHERE AccountID = ?`,
+	[sid, aid], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
 };
