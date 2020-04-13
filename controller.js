@@ -158,10 +158,10 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
 
 exports.shelterList = function (req, res) {
     connection.query
-    (`SELECT * 
-    FROM shelter 
-    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster 
-    ON shelter.DisasterID = temp_disaster.DisasterID`, 
+    (`SELECT *
+    FROM shelter
+    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster
+    ON shelter.DisasterID = temp_disaster.DisasterID`,
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -272,22 +272,22 @@ exports.addDisaster = function (req, res) {
 exports.dashboardData = function (req, res) {
     connection.query(
         `
-        select * 
+        select *
         from (
-            (   
-                (   
+            (
+                (
                     select VictimID, Age as VictimAge, CurrentShelterID
                     from victim
                 ) as victim_dashboard
                 JOIN
                 (
-                    select * 
+                    select *
                     from (
                             (select shelter.ShelterID as ShelterID
                             from shelter) as shelter_dash JOIN
                             ( select disaster.DisasterID as DisasterID
                             from disaster) as disaster_dash
-                        on shelter_dash.ShelterID = disaster_dash.DisasterID	
+                        on shelter_dash.ShelterID = disaster_dash.DisasterID
                     )
                 ) as shelter_disaster_dashboard
                 on victim_dashboard.CurrentShelterID = shelter_disaster_dashboard.ShelterID
@@ -371,6 +371,43 @@ exports.updateDisasterConditions = function (req, res) {
         }
     );
 };
+
+exports.updateShelterCondition = function (req, res) {
+    let id = req.body.id;
+    let shelterTitle = req.body.shelterTitle;
+    let shelterDesc = req.body.shelterDesc;
+    let shelterStatus = req.body.shelterStatus;
+    let updated = req.body.updated;
+
+    connection.query(
+        `INSERT INTO ShelterConditionHistory (ShelterID, ShelterConditionTitle, ShelterConditionDesc, ShelterConditionStatus, UpdatedBy) VALUES (?,?,?,?,?)`, [id, shelterTitle, shelterDesc, shelterStatus, updated], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.updateShelterNeeds = function (req, res) {
+    let id = req.body.id;
+    let shelterNeed = req.body.shelterNeed;
+    let shelterStock = req.body.shelterStock;
+    let updated = req.body.updated;
+
+    connection.query(
+        `INSERT INTO ShelterNeedHistory (ShelterID, ShelterNeedDesc, NeedStockID, UpdatedBy) VALUES (?,?,?,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+}
 
 exports.isStaff = function (id, callback) {
     connection.query(`SELECT AccountID

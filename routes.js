@@ -45,14 +45,20 @@ module.exports = function (app) {
     // Shelter API
     app.route('/shelter')
         .get(cntlr.shelterList);
-		
+
     app.route('/shelter')
         .post(cntlr.addShelter);
-		
+
+    app.route('/shelter/history/conditon')
+        .post(cntlr.updateShelterCondition);
+
+    app.route('/shelter/history/need')
+        .post(cntlr.updateShelterNeeds);
+
 	// Login & Register API
     app.route('/register')
         .post(upload.single('photo'), cntlr.register);
-        
+
 	app.route('/login')
 		.post(cntlr.login);
 
