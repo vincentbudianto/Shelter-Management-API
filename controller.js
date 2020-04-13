@@ -11,6 +11,11 @@ exports.createVictim = function (req, res) {
     var age = req.body.age;
     var ids = req.body.shelterid;
     var photo = req.file.filename;
+	if (req.file != null) {
+		photo = req.file.filename;
+	} else {
+		photo = "";
+	}
 
     connection.query(
         `INSERT INTO victim (NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?)`,
