@@ -218,7 +218,7 @@ exports.shelterList = function (req, res) {
 
 exports.shelterListName = function (req, res) {
     connection.query
-    (`SELECT * FROM shelter`, 
+    (`SELECT * FROM shelter`,
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -403,32 +403,41 @@ exports.updateVictimCondition = function (req, res) {
     let conditionName = req.body.conditionName;
     let conditionDesc = req.body.conditionDesc;
     let conditionStatus = req.body.conditionStatus;
+    let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO ConditionHistory (VictimID, ConditionName, ConditionDesc, ConditionStatus) VALUES (?,?,?,?)`, [id, conditionName, conditionDesc, conditionStatus], function (error, rows, fields) {
+      `INSERT INTO ConditionHistory (VictimID, ConditionName, ConditionDesc, ConditionStatus, UpdatedBy) VALUES (?,?,?,?,?)`,
+      [id, conditionName, conditionDesc, conditionStatus, updated],
+      function (error, rows, fields) {
         if (error) {
-            console.log(error);
-            response.fail(INTERNAL_ERROR, res);
+          console.log(error);
+          response.fail(INTERNAL_ERROR, res);
         } else {
-            response.ok(rows, res);
+          response.ok(rows, res);
         }
-    }
+      }
     );
 };
 
 exports.updateVictimNeeds = function (req, res) {
     let id = req.body.id;
     let NeedDesc = req.body.conditionName;
+    let NeedStock = req.body.needStock;
+    let NeedStatus = req.body.needStatus;
+    let NeedImportance = req.body.needImportance;
+    let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO NeedsHistory (VictimID, NeedDesc) VALUES (?,?)`, [id, NeedDesc], function (error, rows, fields) {
-            if (error) {
-                console.log(error);
-                response.fail(INTERNAL_ERROR, res);
-            } else {
-                response.ok(rows, res);
-            }
+      `INSERT INTO NeedsHistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Importance, UpdatedBy) VALUES (?,?,?,?,?,?)`,
+      [id, NeedDesc, NeedStock, NeedStatus, NeedImportance, updated],
+      function (error, rows, fields) {
+        if (error) {
+          console.log(error);
+          response.fail(INTERNAL_ERROR, res);
+        } else {
+          response.ok(rows, res);
         }
+      }
     );
 };
 
@@ -710,7 +719,7 @@ exports.getAllRecommendation = function (callback) {
 
 exports.listAccount = function (req, res) {
     connection.query
-    (`SELECT AccountID, Username, Name FROM account WHERE Type = 'staff'`, 
+    (`SELECT AccountID, Username, Name FROM account WHERE Type = 'staff'`,
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -724,7 +733,7 @@ exports.listAccount = function (req, res) {
 exports.assignStaff = function (req, res) {
 	let aid = req.body.accountid;
 	let sid = req.body.shelterid;
-	
+
     connection.query
     (`UPDATE account SET CurrentShelterID = ? WHERE AccountID = ?`,
 	[sid, aid], function (error, rows, fields) {
