@@ -205,9 +205,7 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
 exports.shelterList = function (req, res) {
     connection.query
     (`SELECT *
-    FROM shelter
-    JOIN (SELECT DisasterID, Name as DisasterName FROM disaster) as temp_disaster
-    ON shelter.DisasterID = temp_disaster.DisasterID`,
+    FROM shelter`,
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -461,6 +459,92 @@ exports.updateDisasterConditions = function (req, res) {
     );
 };
 
+exports.getShelter = function (id, callback) {
+    connection.query(`SELECT ShelterID, shelter.Name AS Name, District, City, Province, Country, shelter.Longitude, shelter.Latitude,
+            DisasterID, disaster.Name AS DisasterName, Scale
+        FROM shelter LEFT JOIN disaster USING (DisasterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows[0]);
+        }
+    });
+}
+
+exports.getShelterVictimList = function (id, callback) {
+    connection.query(`SELECT VictimID, NIK, victim.Name, Status
+        FROM shelter JOIN victim ON shelter.ShelterID=victim.CurrentShelterID
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getShelterStock = function (id, callback) {
+    connection.query(`SELECT StockID AS Id, shelterstock.Name, Description, Amount
+        FROM shelter JOIN shelterstock USING (ShelterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getShelterConditionHistory = function (id, callback) {
+    connection.query(`SELECT ShelterConditionID AS Id,
+            ShelterConditionTitle AS Title,
+            ShelterConditionDesc AS Description, 
+            ShelterConditionStatus AS Status,
+            Timestamp, UpdatedBy
+        FROM shelter JOIN shelterconditionhistory USING (ShelterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.getShelterNeedHistory = function (id, callback) {
+    connection.query(`SELECT ShelterNeedHistoryID AS Id, ShelterNeedDesc AS Description, NeedStockID, Timestamp, UpdatedBy
+        FROM shelter JOIN shelterneedshistory USING (ShelterID)
+        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            return callback(INTERNAL_ERROR);
+        } else {
+            return callback(null, rows);
+        }
+    });
+}
+
+exports.shelterNeeds = function (req, res) {
+    const {id} = req.query;
+
+    connection.query(
+        `SELECT * FROM (SELECT VictimID, Name, NeedsDesc FROM Victim NATURAL JOIN NeedsHistory 
+        WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY VictimID`, [id], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
 exports.configs = function (req, res){
     connection.query(`SELECT SearchFilter FROM configs`, function (error, rows, fields) {
             if (error) {
@@ -504,6 +588,22 @@ exports.updateShelterCondition = function (req, res) {
     );
 };
 
+exports.shelterCondition = function (req, res) {
+    const {id} = req.query;
+
+    connection.query(
+        `SELECT * FROM (SELECT VictimId as id, Name as name, ConditionName as conditionName, ConditionStatus as status FROM Victim NATURAL JOIN ConditionHistory 
+            WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY id`, [id], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+}
+
 exports.updateShelterNeeds = function (req, res) {
     let id = req.body.id;
     let shelterNeed = req.body.shelterNeed;
@@ -511,7 +611,7 @@ exports.updateShelterNeeds = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO ShelterNeedHistory (ShelterID, ShelterNeedDesc, NeedStockID, UpdatedBy) VALUES (?,?,?,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
+        `INSERT INTO ShelterNeedsHistory (ShelterID, ShelterNeedDesc, NeedStockID, UpdatedBy) VALUES (?,?,?,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
