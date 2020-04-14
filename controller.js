@@ -4,6 +4,32 @@ var response = require('./res');
 var connection = require('./conn');
 const INTERNAL_ERROR = 'Internal Server Error';
 
+exports.createVictim = function (req, res) {
+    var nik = req.body.nik;
+    var nokk = req.body.nokk;
+    var name = req.body.name;
+    var age = req.body.age;
+    var ids = req.body.shelterid;
+    var photo;
+	if (req.file != null) {
+		photo = req.file.filename;
+	} else {
+		photo = "";
+	}
+
+    connection.query(
+        `INSERT INTO victim (NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?)`,
+        [nik, nokk, name, age, photo, ids], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
 exports.victimByShelter = function (req, res) {
     const { id } = req.query;
 
@@ -42,6 +68,26 @@ exports.victimByName = function (req, res) {
         response.fail('name not found', res)
     }
 };
+
+exports.victimByNoKK = function (req, res){
+    const { nokk } = req.query;
+
+    if (nokk) {
+        const searchNoKK = '%' + nokk + '%'
+        connection.query(`SELECT VictimID, NIK, Name, ConditionStatus
+            FROM victim LEFT JOIN conditionhistory USING (VictimID)
+            WHERE NoKK = ?`, [nokk], function (error, rows) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        });
+    } else {
+        response.fail('nokk not found', res)
+    }
+}
 
 exports.victimByKeyword = function (req, res) {
     const { keyword } = req.query;
@@ -158,8 +204,21 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
 
 exports.shelterList = function (req, res) {
     connection.query
-    (`SELECT * 
-    FROM shelter`, 
+    (`SELECT *
+    FROM shelter`,
+    function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.shelterListName = function (req, res) {
+    connection.query
+    (`SELECT * FROM shelter`, 
     function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -178,7 +237,12 @@ exports.register = function (req, res) {
     let name = req.body.name;
     let age = req.body.age;
 	let shelterid = req.body.shelterid;
-    let photo = req.file.filename;
+    var photo;
+	if (req.file != null) {
+		photo = req.file.filename;
+	} else {
+		photo = "";
+	}
 	let type = "staff";
 
     connection.query(
@@ -201,6 +265,22 @@ exports.login = function (req, res) {
     connection.query(
         `SELECT * FROM Account WHERE Username = ? AND Password = ?`,
         [username, password], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
+exports.checkUsername = function (req, res) {
+    let username = req.body.username;
+
+    connection.query(
+        `SELECT * FROM Account WHERE Username = ?`,
+        [username], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -270,22 +350,22 @@ exports.addDisaster = function (req, res) {
 exports.dashboardData = function (req, res) {
     connection.query(
         `
-        select * 
+        select *
         from (
-            (   
-                (   
+            (
+                (
                     select VictimID, Age as VictimAge, CurrentShelterID
                     from victim
                 ) as victim_dashboard
                 JOIN
                 (
-                    select * 
+                    select *
                     from (
                             (select shelter.ShelterID as ShelterID
                             from shelter) as shelter_dash JOIN
                             ( select disaster.DisasterID as DisasterID
                             from disaster) as disaster_dash
-                        on shelter_dash.ShelterID = disaster_dash.DisasterID	
+                        on shelter_dash.ShelterID = disaster_dash.DisasterID
                     )
                 ) as shelter_disaster_dashboard
                 on victim_dashboard.CurrentShelterID = shelter_disaster_dashboard.ShelterID
@@ -385,7 +465,7 @@ exports.getShelter = function (id, callback) {
 }
 
 exports.getShelterVictimList = function (id, callback) {
-    connection.query(`SELECT NIK, victim.Name, Status
+    connection.query(`SELECT VictimID, NIK, victim.Name, Status
         FROM shelter JOIN victim ON shelter.ShelterID=victim.CurrentShelterID
         WHERE ShelterID= ?`, [id], function (error, rows, fields) {
         if (error) {
@@ -456,6 +536,49 @@ exports.shelterNeeds = function (req, res) {
     );
 };
 
+exports.configs = function (req, res){
+    connection.query(`SELECT SearchFilter FROM configs`, function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        }
+    );
+}
+exports.updateConfigs = function (req, res){
+    let searchFilter = req.body.SearchFilter;
+    connection.query(`UPDATE configs SET SearchFilter = ? WHERE configs.index = 1`,[searchFilter], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                response.fail(INTERNAL_ERROR, res)
+            } else {
+                response.ok(rows, res)
+            }
+        }
+    );
+};
+
+exports.updateShelterCondition = function (req, res) {
+    let id = req.body.id;
+    let shelterTitle = req.body.shelterTitle;
+    let shelterDesc = req.body.shelterDesc;
+    let shelterStatus = req.body.shelterStatus;
+    let updated = req.body.updated;
+
+    connection.query(
+        `INSERT INTO ShelterConditionHistory (ShelterID, ShelterConditionTitle, ShelterConditionDesc, ShelterConditionStatus, UpdatedBy) VALUES (?,?,?,?,?)`, [id, shelterTitle, shelterDesc, shelterStatus, updated], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+};
+
 exports.shelterCondition = function (req, res) {
     const {id} = req.query;
 
@@ -470,7 +593,25 @@ exports.shelterCondition = function (req, res) {
             }
         }
     );
-};
+}
+
+exports.updateShelterNeeds = function (req, res) {
+    let id = req.body.id;
+    let shelterNeed = req.body.shelterNeed;
+    let shelterStock = req.body.shelterStock;
+    let updated = req.body.updated;
+
+    connection.query(
+        `INSERT INTO ShelterNeedsHistory (ShelterID, ShelterNeedDesc, NeedStockID, UpdatedBy) VALUES (?,?,?,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
+            if (error) {
+                console.log(error);
+                response.fail(INTERNAL_ERROR, res);
+            } else {
+                response.ok(rows, res);
+            }
+        }
+    );
+}
 
 exports.isStaff = function (id, callback) {
     connection.query(`SELECT AccountID
@@ -566,6 +707,35 @@ exports.getAllRecommendation = function (callback) {
         }
     });
 }
+
+exports.listAccount = function (req, res) {
+    connection.query
+    (`SELECT AccountID, Username, Name FROM account WHERE Type = 'staff'`, 
+    function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.assignStaff = function (req, res) {
+	let aid = req.body.accountid;
+	let sid = req.body.shelterid;
+	
+    connection.query
+    (`UPDATE account SET CurrentShelterID = ? WHERE AccountID = ?`,
+	[sid, aid], function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            response.fail(INTERNAL_ERROR, res)
+        } else {
+            response.ok(rows, res)
+        }
+    });
+};
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)

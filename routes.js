@@ -22,6 +22,9 @@ module.exports = function (app) {
     app.route('/victim/search/keyword')
         .get(cntlr.victimByKeyword);
 
+    app.route('/victim/search/nokk')
+        .get(cntlr.victimByNoKK);
+
     app.route('/victim/detail')
         .get(cntlr.victimDetail);
 
@@ -43,6 +46,9 @@ module.exports = function (app) {
     app.route('/victim/history/need')
         .post(cntlr.updateVictimNeeds);
 
+     app.route('/victim')
+        .post(upload.single('photo'), cntlr.createVictim);
+
     // Shelter API
     app.route('/shelter')
         .get(shelter.getShelter);
@@ -60,12 +66,24 @@ module.exports = function (app) {
     app.route('/shelter')
         .post(cntlr.addShelter);
 		
+	app.route('/sheltername')
+		.get(cntlr.shelterListName);
+
+    app.route('/shelter/history/condition')
+        .post(cntlr.updateShelterCondition);
+
+    app.route('/shelter/history/need')
+        .post(cntlr.updateShelterNeeds);
+
 	// Login & Register API
     app.route('/register')
         .post(upload.single('photo'), cntlr.register);
-        
+
 	app.route('/login')
 		.post(cntlr.login);
+		
+	app.route('/username')
+		.post(cntlr.checkUsername);
 
     app.route('/shelter/need')
         .get(cntlr.shelterNeeds);
@@ -74,11 +92,18 @@ module.exports = function (app) {
         .get(cntlr.shelterCondition);
     // Disaster API
     app.route('/disaster')
-        .get(cntlr.disasterList);
+    .get(cntlr.disasterList);
 
     app.route('/disaster')
         .post(cntlr.addDisaster);
 
+    // Search Filter
+    app.route('/configs/filter')
+        .get(cntlr.configs);
+    
+    app.route('/configs/filter')
+        .post(cntlr.updateConfigs);
+        
     // Dashboard API
     app.route('/dashboard')
         .get(cntlr.dashboardData);
@@ -97,4 +122,11 @@ module.exports = function (app) {
     // Placement Recommendation
     app.route('/recommendation')
         .get(placementRecommendation.getAllRecommendation);
+		
+	// Account API
+	app.route('/account')
+		.get(cntlr.listAccount);
+		
+	app.route('/account')
+		.post(cntlr.assignStaff);
 };
