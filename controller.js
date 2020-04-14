@@ -465,7 +465,7 @@ exports.configs = function (req, res){
 }
 exports.updateConfigs = function (req, res){
     let searchFilter = req.body.SearchFilter;
-    connection.query(`UPDATE configs SET SearchFilter = ?`,[searchFilter], function (error, rows, fields) {
+    connection.query(`UPDATE configs SET SearchFilter = ? WHERE configs.index = 1`,[searchFilter], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 response.fail(INTERNAL_ERROR, res)
