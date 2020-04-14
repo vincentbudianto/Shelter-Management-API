@@ -243,7 +243,7 @@ exports.register = function (req, res) {
 	} else {
 		photo = "";
 	}
-	let type = "staff";
+	let type = "Staff";
 
     connection.query(
         `INSERT INTO Account (Username, Password, Type, NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?,?,?,?)`,
