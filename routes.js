@@ -21,6 +21,9 @@ module.exports = function (app) {
     app.route('/victim/search/keyword')
         .get(cntlr.victimByKeyword);
 
+    app.route('/victim/search/nokk')
+        .get(cntlr.victimByNoKK);
+
     app.route('/victim/detail')
         .get(cntlr.victimDetail);
 
