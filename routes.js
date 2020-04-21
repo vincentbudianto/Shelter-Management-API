@@ -46,10 +46,6 @@ module.exports = function (app) {
     app.route('/victim/history/condition')
         .post(cntlr.updateVictimCondition);
 
-    app.route('/victim/history/condition')
-        .post(cntlr.updateVictimCondition);
-
-
     app.route('/victim/history/need')
         .post(cntlr.updateVictimNeeds);
 
@@ -59,20 +55,25 @@ module.exports = function (app) {
     // Shelter API
     app.route('/shelter')
         .get(shelter.getShelter);
+
     app.route('/shelter/all')
         .get(cntlr.shelterList);
+
     app.route('/shelter/victimList')
         .get(shelter.getShelterVictimList);
+
     app.route('/shelter/stock')
         .get(shelter.getShelterStock);
+
     app.route('/shelter/conditions')
         .get(shelter.getShelterConditionHistory);
+
     app.route('/shelter/needs')
         .get(shelter.getShelterNeedHistory);
-		
+
     app.route('/shelter')
         .post(cntlr.addShelter);
-		
+
 	app.route('/sheltername')
 		.get(cntlr.shelterListName);
 
@@ -88,7 +89,7 @@ module.exports = function (app) {
 
 	app.route('/login')
 		.post(cntlr.login);
-		
+
 	app.route('/username')
 		.post(cntlr.checkUsername);
 
@@ -97,9 +98,10 @@ module.exports = function (app) {
 
     app.route('/shelter/condition')
         .get(cntlr.shelterCondition);
+
     // Disaster API
     app.route('/disaster')
-    .get(cntlr.disasterList);
+        .get(cntlr.disasterList);
 
     app.route('/disaster')
         .post(cntlr.addDisaster);
@@ -107,10 +109,10 @@ module.exports = function (app) {
     // Search Filter
     app.route('/configs/filter')
         .get(cntlr.configs);
-    
+
     app.route('/configs/filter')
         .post(cntlr.updateConfigs);
-        
+
     // Dashboard API
     app.route('/dashboard')
         .get(cntlr.dashboardData);
@@ -121,19 +123,21 @@ module.exports = function (app) {
     // Validation API
     app.route('/check/staff')
         .get(accountValidation.isStaff);
+
     app.route('/check/shelter/staff')
         .get(accountValidation.isStaffShelter);
+
     app.route('/check/admin')
         .get(accountValidation.isAdmin);
 
     // Placement Recommendation
     app.route('/recommendation')
         .get(placementRecommendation.getAllRecommendation);
-		
+
 	// Account API
 	app.route('/account')
 		.get(cntlr.listAccount);
-		
+
 	app.route('/account')
 		.post(cntlr.assignStaff);
 };
