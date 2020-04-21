@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2020 at 03:05 PM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.4.3
+-- Waktu pembuatan: 21 Apr 2020 pada 10.38
+-- Versi server: 10.1.38-MariaDB
+-- Versi PHP: 7.3.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -25,7 +25,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `account`
+-- Struktur dari tabel `account`
 --
 
 CREATE TABLE `account` (
@@ -37,28 +37,40 @@ CREATE TABLE `account` (
   `NoKK` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Name` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Age` int(11) NOT NULL,
-  `Photo` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Photo` mediumtext COLLATE utf8mb4_unicode_ci,
   `CurrentShelterID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `account`
+--
+
+INSERT INTO `account` (`AccountID`, `Username`, `Password`, `Type`, `NIK`, `NoKK`, `Name`, `Age`, `Photo`, `CurrentShelterID`) VALUES
+(1, 'admin', 'admin', 'Admin', '1234567890', '1234567890', 'ADMIN', 100, NULL, NULL),
+(2, 'vincent', '13517137', 'Staff', '1234567890', '1234567890', 'Vincent', 21, NULL, NULL),
+(3, 'christzen', '13517125', 'Staff', '1234567890', '1234567890', 'Christzen', 21, NULL, NULL),
+(4, 'taufikurrahman', '13517074', 'Staff', '1234567890', '1234567890', 'Taufikurrahman', 21, NULL, NULL),
+(5, 'ardysatrio', '13517062', 'Staff', '1234567890', '1234567890', 'Ardysatrio', 21, NULL, NULL),
+(6, 'fatur', '13517056', 'Staff', '1234567890', '1234567890', 'Fatur', 21, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `conditionhistory`
+-- Struktur dari tabel `conditionhistory`
 --
 
 CREATE TABLE `conditionhistory` (
   `ConditionID` int(11) NOT NULL,
   `VictimID` int(11) NOT NULL,
   `ConditionName` varchar(25) NOT NULL,
-  `ConditionDesc` text DEFAULT NULL,
+  `ConditionDesc` text,
   `ConditionStatus` tinyint(1) NOT NULL COMMENT '1 = Active; 0 = Inactive',
-  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UpdatedBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `conditionhistory`
+-- Dumping data untuk tabel `conditionhistory`
 --
 
 INSERT INTO `conditionhistory` (`ConditionID`, `VictimID`, `ConditionName`, `ConditionDesc`, `ConditionStatus`, `Timestamp`, `UpdatedBy`) VALUES
@@ -67,7 +79,7 @@ INSERT INTO `conditionhistory` (`ConditionID`, `VictimID`, `ConditionName`, `Con
 -- --------------------------------------------------------
 
 --
--- Table structure for table `disaster`
+-- Struktur dari tabel `disaster`
 --
 
 CREATE TABLE `disaster` (
@@ -79,7 +91,7 @@ CREATE TABLE `disaster` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `disaster`
+-- Dumping data untuk tabel `disaster`
 --
 
 INSERT INTO `disaster` (`DisasterID`, `Name`, `Scale`, `Latitude`, `Longitude`) VALUES
@@ -89,7 +101,7 @@ INSERT INTO `disaster` (`DisasterID`, `Name`, `Scale`, `Latitude`, `Longitude`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `disasterconditionhistory`
+-- Struktur dari tabel `disasterconditionhistory`
 --
 
 CREATE TABLE `disasterconditionhistory` (
@@ -98,11 +110,11 @@ CREATE TABLE `disasterconditionhistory` (
   `DisasterConditionTitle` varchar(25) NOT NULL,
   `DisasterConditionDesc` varchar(25) NOT NULL,
   `DisasterConditionStatus` int(11) NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `disasterconditionhistory`
+-- Dumping data untuk tabel `disasterconditionhistory`
 --
 
 INSERT INTO `disasterconditionhistory` (`DisasterID`, `DisasterConditionID`, `DisasterConditionTitle`, `DisasterConditionDesc`, `DisasterConditionStatus`, `Timestamp`) VALUES
@@ -112,7 +124,7 @@ INSERT INTO `disasterconditionhistory` (`DisasterID`, `DisasterConditionID`, `Di
 -- --------------------------------------------------------
 
 --
--- Table structure for table `needshistory`
+-- Struktur dari tabel `needshistory`
 --
 
 CREATE TABLE `needshistory` (
@@ -122,12 +134,12 @@ CREATE TABLE `needshistory` (
   `NeedStockID` int(11) NOT NULL,
   `NeedStatus` tinyint(1) NOT NULL COMMENT '0 = Inactive, 1 = Active',
   `Urgency` tinyint(4) NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UpdatedBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `needshistory`
+-- Dumping data untuk tabel `needshistory`
 --
 
 INSERT INTO `needshistory` (`NeedHistoryID`, `VictimID`, `NeedDesc`, `NeedStockID`, `NeedStatus`, `Urgency`, `Timestamp`, `UpdatedBy`) VALUES
@@ -136,7 +148,7 @@ INSERT INTO `needshistory` (`NeedHistoryID`, `VictimID`, `NeedDesc`, `NeedStockI
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shelter`
+-- Struktur dari tabel `shelter`
 --
 
 CREATE TABLE `shelter` (
@@ -153,7 +165,7 @@ CREATE TABLE `shelter` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `shelter`
+-- Dumping data untuk tabel `shelter`
 --
 
 INSERT INTO `shelter` (`ShelterID`, `DisasterID`, `Name`, `District`, `City`, `Province`, `Country`, `UniqueCode`, `Latitude`, `Longitude`) VALUES
@@ -165,7 +177,7 @@ INSERT INTO `shelter` (`ShelterID`, `DisasterID`, `Name`, `District`, `City`, `P
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shelterconditionhistory`
+-- Struktur dari tabel `shelterconditionhistory`
 --
 
 CREATE TABLE `shelterconditionhistory` (
@@ -174,25 +186,25 @@ CREATE TABLE `shelterconditionhistory` (
   `ShelterConditionTitle` tinytext NOT NULL,
   `ShelterConditionDesc` mediumtext NOT NULL,
   `ShelterConditionStatus` tinyint(4) NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UpdatedBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shelterhistory`
+-- Struktur dari tabel `shelterhistory`
 --
 
 CREATE TABLE `shelterhistory` (
   `ShelterHistoryID` int(11) NOT NULL,
   `VictimID` int(11) NOT NULL,
   `ShelterID` int(11) NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `shelterhistory`
+-- Dumping data untuk tabel `shelterhistory`
 --
 
 INSERT INTO `shelterhistory` (`ShelterHistoryID`, `VictimID`, `ShelterID`, `Timestamp`) VALUES
@@ -207,7 +219,7 @@ INSERT INTO `shelterhistory` (`ShelterHistoryID`, `VictimID`, `ShelterID`, `Time
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shelterneedshistory`
+-- Struktur dari tabel `shelterneedshistory`
 --
 
 CREATE TABLE `shelterneedshistory` (
@@ -215,14 +227,14 @@ CREATE TABLE `shelterneedshistory` (
   `ShelterID` int(11) NOT NULL,
   `ShelterNeedDesc` mediumtext NOT NULL,
   `NeedStockID` int(11) NOT NULL,
-  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UpdatedBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shelterstock`
+-- Struktur dari tabel `shelterstock`
 --
 
 CREATE TABLE `shelterstock` (
@@ -234,7 +246,7 @@ CREATE TABLE `shelterstock` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `shelterstock`
+-- Dumping data untuk tabel `shelterstock`
 --
 
 INSERT INTO `shelterstock` (`StockID`, `Name`, `Description`, `Amount`, `ShelterID`) VALUES
@@ -244,7 +256,7 @@ INSERT INTO `shelterstock` (`StockID`, `Name`, `Description`, `Amount`, `Shelter
 -- --------------------------------------------------------
 
 --
--- Table structure for table `victim`
+-- Struktur dari tabel `victim`
 --
 
 CREATE TABLE `victim` (
@@ -259,7 +271,7 @@ CREATE TABLE `victim` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `victim`
+-- Dumping data untuk tabel `victim`
 --
 
 INSERT INTO `victim` (`VictimID`, `NIK`, `NoKK`, `Name`, `Status`, `Age`, `Photo`, `CurrentShelterID`) VALUES
@@ -275,7 +287,7 @@ INSERT INTO `victim` (`VictimID`, `NIK`, `NoKK`, `Name`, `Status`, `Age`, `Photo
 (6, NULL, NULL, 'Hendra', 0, 19, '/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEBUTEBAVFhMWFxYQFhUWFhYXGhUXFhUXFxgXFhcYHisgGBolGxcVITEhJSkrLi4uGR8zODMsNygtLi0BCgoKDg0OGxAQGyslHyYrLS0vLS8tKy8tLS0tLS0tLS0tLi0tLS0tLS8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOUA3AMBIgACEQEDEQH/xAAcAAEAAgMBAQEAAAAAAAAAAAAABQYBAwQCBwj/xABEEAACAQIEAgcEBwYDCAMAAAABAgADEQQSITEFUQYTIkFhcZEygaGxB0JSYnLB0RQjM5Ki8EOy4VSCg7PC0tPxFTRT/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAEEBQMCBv/EACcRAAICAQQCAQMFAAAAAAAAAAABAgMRBBIhMQVBIjJRkRMUYXGx/9oADAMBAAIRAxEAPwD7NEQTPRxEREAREQBERAEROfE42lT9twDy3PoNZKWQ2l2dESEr9IkHsIT4k2nFV4/WO2VfIX+c6KmTOTvgi0RKc3Fq5/xT7rD5CazxCt/+r/zGe/28jn+5j9i6xKYvEq4/xW9b/ObafGsQPrg+aiQ6JErUx+xboldo9In+vTB8iR87yQw/HKD7kqfvD8xpPDrkvR0jdB+ySiYRgRcEEcxrMzwdBERIAiIgCImCYBmIiAIiIBjby+X+kzExt5fKAZiJh3CgkkADUkyQZnFj+J06OhN2+yN/fykTxLjpa60tB9rvPlyHxkITO8KM8yK1moxxEkcZxqrU0ByLyXf3tv8AKR0RLKil0VJScuxERJIEREAREQBERANuHxL0zdGI8tj5jYycwXSAHSsLfeX8x+kr0TxKuMuz3CyUei+U6isLqQQe8az1KTg8a9I3Q+Y7j5iWjhvE0rDTR+9T8xzEqzqcefRcruU+PZ3REwTOR2BMAQBMwBERAEREAREw7hQSTYDUmSDXXrLTUsxso7+UqvFOJNWNtkGy/meZji3ETWbTRB7I/M+Mj9pbqqxy+ylddu4XRmIidiuIiIAiIgCIiAIiIAiIgCIiAJlGIIINiNQR3TEGAWjhHFxU7D6VO7736GSoEoam2oOu95a+C8S65cre2P6hzEqW1Y5Rdpu3fFklEROBYEREAREQBK50h4hmPVKdB7XieXu+flJbi+N6mmSPaPZXz5+79JTjLFEM/JlbUWY+KEREtFMxMxMQDMREARE3YbDtUay+89wE8ykordLomMXJ4XZpm1MNUOyMfcZPYXApT2Fz9o7+7lOmZNnlUniEfyaVfjsr5v8ABV6lB19pWHmDNctk4sXw1H1Xst4bHzE9U+Ui3ixY/ki3xzSzB5ICJ7q0yhKsLETxNVNNZRmtNPDEREkCIiAJ7oVmRgymxGoniIBdsBihVQMPIjke8TolT4FjeqqWJ7L2U+B7j+XvlslGyG1mjVPfHIiInM6CInPxDEdXSZu8DTzOg+JkpZDeFkrXHcX1lUgeynZH5n1+UjoiaEVhYMuUtzyIiJJAiIgGJmJiAZAvLLgsMKaAd+5PMyE4Yl6q+Fz6AkTt6TcV/ZcOzj2z2EH3iN/IC593jMXytryq1/ZreNqzmfvolYnz/AdO6yi1aktT7wOQ+/QgnyAkmvT2h30at/DIf+qZG1mq65FtiUvEdPx/h4cnxdwPgAfnIev0zxjMCGVQCGyKujWOzE3NvIydrJVci+8Yw2ZMw3XXzHf+vrIKWTA4pK9Jaiey639dCD4g3ErjrYkciR6Tb8Xa3FwfoxPI1bZqS9mIiJqmcIiIAiIgCXHg+K62kCT2h2W8x3+8WlOkv0axGWqUOzj4jUfC85XRzE7USxIs8REpF8SE6UVrIicyWPu/9yblW6S1L1rfZUD1ufznWlZkcr3iBFRES6Z4iIgCIiAIiIB2cINqo8j8jK39IWMLYhad9Kag2+8+p/pyT3S4sycTo072pghWH2mqIQL+9lkR0qqZsbXIN+3l/lAX8p89r5qd/Hrg+i8dU4Vpv3z+SKiIlQ0xERBBfPo6xxNOpRP1SKi+TaMPIEA/706cR7bfib5mVvoHiAmNUE2zq1P36MPiszwPidR8RWpuxYZndb62s+1+Vj8Je8dYoWuL9mV5KhzhuXrkn4iJvGAIiIAiIgCbMNVyOrD6pB9DNcQ+RnBfgYnNwypmoofugemn5Tpmc1hmqnlZEp3GWviKnnb0AEuMpXE/41T8bfOd9P8AUVtT9KOaIiWimIiYVR2yQCQABfW1/Dz+UhvBKWTypuSA22lgpY7A30Om8y4IGrW80IHqGIE9uMvYXQAXJG5Jv3zyXK63JA1IJvcd++0jk9cdBWB+cE9wBJPcP72nqrSVVcADsjOptqL309QfdPN7dZb7H/dGSNvJWelGEqJUTEJa6kE2YEqyaqxHu+Ehme5uTqdST3k6y91cOjLlZFK8iARKdiMO9N2VaasAxsxANwTcasR3WGkxtfp9st69m747U74/pvtf4ckToekBUTsgZrEr3A63im658vVrlLFdrne2/d5ShtNPcaFUk2AueU2fs7fdJ5BheKTim50JHaTxAvoR6TyuHVtEYH7rDKfjvCQbZijUZSHTQpZ78rHQ+ok30RwhOeu27EqPW7H109xnHwOlnZlKggWZgRuLtcNz2t75a6VJVBFhlVcwUDKvICw7tJo6GjMv1H6MvyOoxH9Jdv8Aw2xPBAs3ZUFRnBUW27jzi2i6KS2ZrsL2AIFgPeJsZMPaZJN7ADYtqbbW8PGZU3ExQQ5jsLq2g2HszyyELrubKtibA8yRp7pGRg2RAET0eRERALZ0da+HHgWHxv8AnJKRPRr+CfxH5CS0oWfUzSq+hCUziwtXqfiJ9dZc5UukCWxDeIVvhb8p0ofyOWpXxI6IiWykJgNbMCpIYAaZeR5mZiAngwXDWLHI9rXI7LDxsdPWY7P1nDfdTW/mb7ek9RIwesnlqpKvdDmYEbrYaWA3/vWZvY3tcEZSOY8PjMxGCNxrYaadZ4XyAe8jUyF6SYNWRHKtemOrOXLYr3HXb/Xwk9MMoIIIuDoRzE53VKyDidqL3VNSRRGrjMhCkBQBbT4c54R7MGsfazW77XvO7i3DGoNpqh9k8vA+Mj585ZGUJbZdn1Fc42RUovhmbgsSykgkm17EXO/jNlN0U5gHJG18oA87TVJvgnBy5D1RZdwp+t4nw+c9VVysltieb7YVR3SZ3dHcIURnqKb1bbWBUAkjfnc+iyUS4JuCVIykHKDbwtpvf1myJ9DXUoRUUfMW3Ssm5s8dxADaixZsug5ACZ7gCG7N7MuXY62Ib+9J6idMHLJrQkEmxIsVAJBIvbfXwhVsCMujLY2tow2Op/uwmyIwNxhTprvMxEkgREQC1dG1/cebMfkPykpOHgiZcOniC3qSZ3ShN/JmlWsRQle6U0u0j8wVPu1HzMsMj+PUM9Brbr2x7t/heTW8SRF0cwZUYiJeM4REQBERAEREARAE5MbxTD0f41emn4nUfAm8ZwSk30aOkZP7M9u/KP6hKUHcbrLJxnjFGtSy0nD3IN12sNd+/ukDMHyE1K3h+j6PxlcoU/JezQxc91p9GQ3APgD8JQJZ8P0iwiogq10ptYLZyF1AtudJ18bNRlJN9nHy1cpRi0usk0TE10K6VBem6sOakMPUT3tNkwTMREAREQBERAEyBc2G50mJ3cEoZ668l7Z923xtIk8LJMVl4LbQp5VC8gF9Bae4iZ5qIQRfQ7bREgFIxuHNOoyHuOniO4+k0Sx9JcHmUVANV7LfhJ0PuPzlcl+uW6OTOthtlgRET2cxEQTAIfpH0joYFAal2dtUpru1u8/ZXx9LmfPsf9ImNcnqhTpL4Lnb+ZtPhK9xvijYvEPWY+03ZHJBoi+Flt7785wyjZdJvg1KtNGK5WWSON4/jK38XE1WHLMVH8q2Ejbd8zE5Nt9lhJLo9U6jKbqxB8CR8p1rxbEDas3vN/nOKJ5cU+z2pNHVU4lXbeq/qR8pyk33iISS6Ibb7PVJ2Q3Rip5qSD6iTOC6W4+lbLiXIHc9nH9QJ+MhInpNro8uKfaL7wn6SaoYDFUVZe9qfZYf7rEg+on0PAY2nXprUpOGRtiPiCNwQdCDPz/Lz9FfEytd8OfYqKag8HSwPqp1/CJYquecMp6jTx27on0+IiWzPEREASy9GsNlQud20HkP9b+kgMHhjVcIO/v5DvPpLtTphQFGwAA8hK98uNpZ08MvceoiJVLgiIgGHUEEEXB0I5ym8TwZo1Cv1d1PMfqNpc5y8SwIrJlOhGqnkf0nWqe1nK6vev5KXE91qTIxVhYjQieJdM8TXX9hvI/KbJrxHsN5H5SGEfnlNh5Cep5TYeQnqZhuiIiAIiIAiIgCIiAJP9A6mXiNDxLr60nkBJ3oKl+I4fwZm9KTmeofUjxZ9D/o+1TMTE0jFMxEl+BcN6xuscdgbD7RH5CeZSUVlnqEXJ4RJcAwHVpnYdpvgvd67+klYiUZScnlmlGKisIRETySIiIAiJgmAR/GOGisLrpUGx5jkf1lUqUypKsLEaEGXsCcXE+GJWHJxs35HmJ3qt28Po4XU7uV2U+eao7J8j8p0YvCvSbK4sfgfEHvnPU9k+R+UtZyuCklh4Z8ir9GaZH7t2XwPaH6/GRmK6P10uRlcDXQ6+hlwXaasY1qbnkrH+kz5uF817PrJUQayfPogRNEzxERAEREAT1SpliFUEk6ADvnmdfCXy16Z++B66fnIk8LJKWWSmB6NO2tZso+yNT7zsPjLj0TwNKjiE6tANG13J7J3O85pI9H/wD7CeTf5DKVVsp2xz90W76owpnj7MuERJjhXBS9mqiy7hdi3nyE+glJRWWfMRg5PCOfhPDDVN2uKY3PPwEtqKAAFFgBYAcoRQAABYDQAd0beUpzm5Mv11qCMxETmdBERAERMEwATAEyBEAREQDXiKC1FyuoI/vblK5xPgDqCaXbFjp9YafGWeJ7jNx6PE64y7PgLIVOVgQw0IIIIPIg7Tj4s1qFU/cb5GfeuK8Ew2KFq1JWOwbZh5MNfdKJ0m+jKo9KouErAlhYLV0/rUH/ACzNemlGSxyjWWrhKPPB8EiWHi3QfimFv1uCq2H1qY61fO9O9h52ldJ1t3jQjvFvCXSoZiIgCIgmAJ7oNldTyYH0IM3cP4fXxBy4ejUqnlTRnt55QbS58F+iTimIsaqJh051WBa3giXPuJWBlI65O9EeGVq1dWp0yUGYF9lF1I1bn4DWXbg/QLC0bGsTWcW9rspf8A395MtVNAoAUAAaAAWA8gNpVp07jJSfo736qMouCXZHcO4MlKzN2n5nYeQ/OScRLzk28sz4xUVhCIieSTG3lMxMbeUAzERAETd1QjqhGT1tZpibuqEdUIyNrNMTd1QjqhGRtZpic+I4jQp1BTZjm0voSBfbMe7u8rgm0ycfRDspZgFuGcqQgKjMQahGW4HjzG4MZG1m+Jz1uJYZVJ65D2RUsrBiVNgCANSDmXXbUTFPieHJymqEYFQVqdg3YsFFm7yUa3O1xpGRtZ0zlx/DMPiBavQpVRyqU0f/ADAz0/EcOCR1ynLmvYg2KWzKbfW7Q7O81Ybi+HdwmfK52VxkJ0RtAd9Kibc/CRkbWQ2J+j7g9T2uH0R+AGn/AMsicJ+irgv+xkf8fE/+SWv/AOUwv+0U7ZS+bOuWwYKTmvb2iB5mdFbEUUID1UUkFgGZRcKLsRfcAak90cE4kVCl9F3BVN/2IH8VbEMPQ1LSUwfQ7hlEg0+H4YEbHqUYjyZgSJLHiGGFr4il2gGX94naBNgRrqLgidTqqgkmwGpJ0AA3JPKOBhmpFCiygADuGg9BMzSeI4UC/wC00rWDX6xLZSQoO+1yBfmZpfi1ACqcxy0gC7BSRqqsLW9rRgdJOSNrOyJyVeKUFz3Zuxe5ytY5WCtlIHasxANtjPNfi1BGKkvcEKBkPaN2HZJ0NirA+UZG1nbE48RxbDozKzNmTIGVVLG7qzACw1OVGNv1EkuqEZG1mmJu6oR1QjI2s0xN3VCOqEZG1mmJu6oR1QjI2s2xETydBERAEREAi8XwWnUq9YWcXtmRWsr2Fu2LXOgAtfu855r8GDlv39ZVZi+RWUKGNrn2cxvqbEkXYm21kQDVR6O01phFqVNCSG7F9VC7ZMpFhsRY63BBtNSdGKSiwq1QCChA6oAqxYstgllBz27NrZRa2t0QD03RqiSpL1CaYZaZ7F6aMApUWTUZQVu1zZjrexG5+AYcqiBcqqAtkCrez0nubDcmktyLaX8LIgGpejqCxFernGuf91e+VUBt1eXRFC7d5O9iPdbo/TbTragHVrRIGQ3VA3VjtIT2S7G/eT2rjSYiAYfo7SZSGdyTnu3YuS/XZjotr/v6h0FtvG8ljMClRHUi3WLkZhva2lr8rxEAh8XwAZg4xFUOXQk2panrEfMQKdi3YsCQbAnSbqfR2kqsM72akcOP4YKqVRTYhASTkU9q9u6w0iIBsqcDpGpVcls1VShsEGUG17ELc3Kr7RbbS084ngCVGdjVqXfQ6UTZe0cvapnMO21s2a3da5iIBprdFcO17Goua31s4FhVBKrVDAEis4OnlaT6rYWHdpEQDMREAREQBERAP//Z', 3);
 
 --
--- Triggers `victim`
+-- Trigger `victim`
 --
 DELIMITER $$
 CREATE TRIGGER `add_shelter_history_insert` AFTER INSERT ON `victim` FOR EACH ROW INSERT INTO shelterhistory(VictimID, ShelterID) VALUES (new.VictimID, new.CurrentShelterID)
@@ -291,14 +303,14 @@ DELIMITER ;
 --
 
 --
--- Indexes for table `account`
+-- Indeks untuk tabel `account`
 --
 ALTER TABLE `account`
   ADD PRIMARY KEY (`AccountID`),
   ADD KEY `CurrentShelterID` (`CurrentShelterID`);
 
 --
--- Indexes for table `conditionhistory`
+-- Indeks untuk tabel `conditionhistory`
 --
 ALTER TABLE `conditionhistory`
   ADD PRIMARY KEY (`ConditionID`),
@@ -306,20 +318,20 @@ ALTER TABLE `conditionhistory`
   ADD KEY `UpdatedBy` (`UpdatedBy`);
 
 --
--- Indexes for table `disaster`
+-- Indeks untuk tabel `disaster`
 --
 ALTER TABLE `disaster`
   ADD PRIMARY KEY (`DisasterID`);
 
 --
--- Indexes for table `disasterconditionhistory`
+-- Indeks untuk tabel `disasterconditionhistory`
 --
 ALTER TABLE `disasterconditionhistory`
   ADD PRIMARY KEY (`DisasterConditionID`),
   ADD KEY `DisasterID` (`DisasterID`);
 
 --
--- Indexes for table `needshistory`
+-- Indeks untuk tabel `needshistory`
 --
 ALTER TABLE `needshistory`
   ADD PRIMARY KEY (`NeedHistoryID`),
@@ -327,14 +339,14 @@ ALTER TABLE `needshistory`
   ADD KEY `UpdatedBy` (`UpdatedBy`);
 
 --
--- Indexes for table `shelter`
+-- Indeks untuk tabel `shelter`
 --
 ALTER TABLE `shelter`
   ADD PRIMARY KEY (`ShelterID`),
   ADD KEY `DisasterID` (`DisasterID`);
 
 --
--- Indexes for table `shelterconditionhistory`
+-- Indeks untuk tabel `shelterconditionhistory`
 --
 ALTER TABLE `shelterconditionhistory`
   ADD PRIMARY KEY (`ShelterConditionID`),
@@ -342,7 +354,7 @@ ALTER TABLE `shelterconditionhistory`
   ADD KEY `UpdatedBy` (`UpdatedBy`);
 
 --
--- Indexes for table `shelterhistory`
+-- Indeks untuk tabel `shelterhistory`
 --
 ALTER TABLE `shelterhistory`
   ADD PRIMARY KEY (`ShelterHistoryID`),
@@ -350,7 +362,7 @@ ALTER TABLE `shelterhistory`
   ADD KEY `ShelterID` (`ShelterID`);
 
 --
--- Indexes for table `shelterneedshistory`
+-- Indeks untuk tabel `shelterneedshistory`
 --
 ALTER TABLE `shelterneedshistory`
   ADD PRIMARY KEY (`ShelterNeedHistoryID`),
@@ -358,132 +370,132 @@ ALTER TABLE `shelterneedshistory`
   ADD KEY `UpdatedBy` (`UpdatedBy`);
 
 --
--- Indexes for table `shelterstock`
+-- Indeks untuk tabel `shelterstock`
 --
 ALTER TABLE `shelterstock`
   ADD PRIMARY KEY (`StockID`),
   ADD KEY `ShelterID` (`ShelterID`);
 
 --
--- Indexes for table `victim`
+-- Indeks untuk tabel `victim`
 --
 ALTER TABLE `victim`
   ADD PRIMARY KEY (`VictimID`),
   ADD KEY `CurrentShelterID` (`CurrentShelterID`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `account`
+-- AUTO_INCREMENT untuk tabel `account`
 --
 ALTER TABLE `account`
-  MODIFY `AccountID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `AccountID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `conditionhistory`
+-- AUTO_INCREMENT untuk tabel `conditionhistory`
 --
 ALTER TABLE `conditionhistory`
   MODIFY `ConditionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `disaster`
+-- AUTO_INCREMENT untuk tabel `disaster`
 --
 ALTER TABLE `disaster`
   MODIFY `DisasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `disasterconditionhistory`
+-- AUTO_INCREMENT untuk tabel `disasterconditionhistory`
 --
 ALTER TABLE `disasterconditionhistory`
   MODIFY `DisasterConditionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `needshistory`
+-- AUTO_INCREMENT untuk tabel `needshistory`
 --
 ALTER TABLE `needshistory`
   MODIFY `NeedHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `shelter`
+-- AUTO_INCREMENT untuk tabel `shelter`
 --
 ALTER TABLE `shelter`
   MODIFY `ShelterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `shelterconditionhistory`
+-- AUTO_INCREMENT untuk tabel `shelterconditionhistory`
 --
 ALTER TABLE `shelterconditionhistory`
   MODIFY `ShelterConditionID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `shelterhistory`
+-- AUTO_INCREMENT untuk tabel `shelterhistory`
 --
 ALTER TABLE `shelterhistory`
   MODIFY `ShelterHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `shelterneedshistory`
+-- AUTO_INCREMENT untuk tabel `shelterneedshistory`
 --
 ALTER TABLE `shelterneedshistory`
   MODIFY `ShelterNeedHistoryID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `shelterstock`
+-- AUTO_INCREMENT untuk tabel `shelterstock`
 --
 ALTER TABLE `shelterstock`
   MODIFY `StockID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `victim`
+-- AUTO_INCREMENT untuk tabel `victim`
 --
 ALTER TABLE `victim`
   MODIFY `VictimID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `conditionhistory`
+-- Ketidakleluasaan untuk tabel `conditionhistory`
 --
 ALTER TABLE `conditionhistory`
   ADD CONSTRAINT `conditionhistory_ibfk_1` FOREIGN KEY (`VictimID`) REFERENCES `victim` (`VictimID`);
 
 --
--- Constraints for table `needshistory`
+-- Ketidakleluasaan untuk tabel `needshistory`
 --
 ALTER TABLE `needshistory`
   ADD CONSTRAINT `needshistory_ibfk_1` FOREIGN KEY (`VictimID`) REFERENCES `victim` (`VictimID`);
 
 --
--- Constraints for table `shelterconditionhistory`
+-- Ketidakleluasaan untuk tabel `shelterconditionhistory`
 --
 ALTER TABLE `shelterconditionhistory`
   ADD CONSTRAINT `shelterconditionhistory_ibfk_1` FOREIGN KEY (`UpdatedBy`) REFERENCES `account` (`AccountID`);
 
 --
--- Constraints for table `shelterhistory`
+-- Ketidakleluasaan untuk tabel `shelterhistory`
 --
 ALTER TABLE `shelterhistory`
   ADD CONSTRAINT `shelterhistory_ibfk_4` FOREIGN KEY (`ShelterID`) REFERENCES `shelter` (`ShelterID`),
   ADD CONSTRAINT `shelterhistory_ibfk_5` FOREIGN KEY (`VictimID`) REFERENCES `victim` (`VictimID`);
 
 --
--- Constraints for table `shelterneedshistory`
+-- Ketidakleluasaan untuk tabel `shelterneedshistory`
 --
 ALTER TABLE `shelterneedshistory`
   ADD CONSTRAINT `shelterneedshistory_ibfk_1` FOREIGN KEY (`UpdatedBy`) REFERENCES `account` (`AccountID`);
 
 --
--- Constraints for table `shelterstock`
+-- Ketidakleluasaan untuk tabel `shelterstock`
 --
 ALTER TABLE `shelterstock`
   ADD CONSTRAINT `shelterstock_ibfk_1` FOREIGN KEY (`ShelterID`) REFERENCES `shelter` (`ShelterID`);
 
 --
--- Constraints for table `victim`
+-- Ketidakleluasaan untuk tabel `victim`
 --
 ALTER TABLE `victim`
   ADD CONSTRAINT `victim_ibfk_1` FOREIGN KEY (`CurrentShelterID`) REFERENCES `shelter` (`ShelterID`);
