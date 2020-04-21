@@ -31,6 +31,9 @@ module.exports = function (app) {
     app.route('/victim/history/shelter')
         .get(cntlr.victimShelterHistory);
 
+    app.route('/victim/history/shelter')
+        .post(cntlr.updateVictimShelter);
+
     app.route('/victim/history/condition')
         .get(victim.victimConditionHistory);
 
@@ -42,6 +45,10 @@ module.exports = function (app) {
 
     app.route('/victim/history/condition')
         .post(cntlr.updateVictimCondition);
+
+    app.route('/victim/history/condition')
+        .post(cntlr.updateVictimCondition);
+
 
     app.route('/victim/history/need')
         .post(cntlr.updateVictimNeeds);
