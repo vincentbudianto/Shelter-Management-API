@@ -1,11 +1,15 @@
 {
   "name": "shelter-management-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Disaster Management System API",
   "main": "index.js",
+  "engines": {
+    "node": "11.10.0",
+    "npm": "6.7.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon ./server.js"
+    "start": "node ./server.js"
   },
   "author": "",
   "license": "ISC",
