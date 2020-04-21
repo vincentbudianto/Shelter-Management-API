@@ -14,5 +14,6 @@ deployToHeroku:
   image: ruby:latest
   only:
     - master
+    - staging
   script:
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
