@@ -506,7 +506,8 @@ exports.getShelterConditionHistory = function (id, callback) {
             ShelterConditionStatus AS Status,
             Timestamp, UpdatedBy
         FROM shelter JOIN shelterconditionhistory USING (ShelterID)
-        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        WHERE ShelterID= ?
+        ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
             console.log(error)
             return callback(INTERNAL_ERROR);
@@ -517,9 +518,13 @@ exports.getShelterConditionHistory = function (id, callback) {
 }
 
 exports.getShelterNeedHistory = function (id, callback) {
-    connection.query(`SELECT ShelterNeedHistoryID AS Id, ShelterNeedDesc AS Description, NeedStockID, Timestamp, UpdatedBy
+    connection.query(`SELECT ShelterNeedHistoryID AS Id,
+            ShelterNeedDesc AS Description,
+            ShelterNeedStatus AS Status,
+            NeedStockID, Timestamp, UpdatedBy
         FROM shelter JOIN shelterneedshistory USING (ShelterID)
-        WHERE ShelterID= ?`, [id], function (error, rows, fields) {
+        WHERE ShelterID = ?
+        ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
             console.log(error)
             return callback(INTERNAL_ERROR);
@@ -544,6 +549,36 @@ exports.shelterNeeds = function (req, res) {
         }
     );
 };
+
+exports.changeShelterNeedStatus = function (id, status, callback) {
+    connection.query(
+        `UPDATE ShelterNeedsHistory
+        SET ShelterNeedStatus = ?
+        WHERE ShelterNeedHistoryID = ?`, [status, id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, { value: true });
+            }
+        }
+    );
+}
+
+exports.changeShelterConditionStatus = function (id, status, callback) {
+    connection.query(
+        `UPDATE ShelterConditionHistory
+        SET ShelterConditionStatus = ?
+        WHERE ShelterConditionID = ?`, [status, id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, { value: true });
+            }
+        }
+    );
+}
 
 exports.configs = function (req, res){
     connection.query(`SELECT SearchFilter FROM configs`, function (error, rows, fields) {
@@ -573,11 +608,10 @@ exports.updateShelterCondition = function (req, res) {
     let id = req.body.id;
     let shelterTitle = req.body.shelterTitle;
     let shelterDesc = req.body.shelterDesc;
-    let shelterStatus = req.body.shelterStatus;
     let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO ShelterConditionHistory (ShelterID, ShelterConditionTitle, ShelterConditionDesc, ShelterConditionStatus, UpdatedBy) VALUES (?,?,?,?,?)`, [id, shelterTitle, shelterDesc, shelterStatus, updated], function (error, rows, fields) {
+        `INSERT INTO ShelterConditionHistory (ShelterID, ShelterConditionTitle, ShelterConditionDesc, ShelterConditionStatus, UpdatedBy) VALUES (?,?,?,1,?)`, [id, shelterTitle, shelterDesc, updated], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -611,7 +645,7 @@ exports.updateShelterNeeds = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO ShelterNeedsHistory (ShelterID, ShelterNeedDesc, NeedStockID, UpdatedBy) VALUES (?,?,?,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
+        `INSERT INTO ShelterNeedsHistory (ShelterID, ShelterNeedDesc, NeedStockID, ShelterNeedStatus, UpdatedBy) VALUES (?,?,?,1,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);

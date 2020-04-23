@@ -83,6 +83,12 @@ module.exports = function (app) {
     app.route('/shelter/history/need')
         .post(cntlr.updateShelterNeeds);
 
+    app.route('/shelter/history/need/status')
+        .post(shelter.changeShelterNeedStatus);
+    
+    app.route('/shelter/history/condition/status')
+        .post(shelter.changeShelterConditionStatus);
+
 	// Login & Register API
     app.route('/register')
         .post(upload.single('photo'), cntlr.register);
