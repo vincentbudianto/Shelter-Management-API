@@ -1,4 +1,4 @@
-    'use strict';
+'use strict';
 
 var response = require('../res');
 var dbManager = require('../controller');

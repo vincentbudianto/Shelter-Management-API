@@ -350,7 +350,7 @@ exports.addDisaster = function (req, res) {
 exports.dashboardData = function (req, res) {
     connection.query(
         `
-        select VictimID, Age as VictimAge, CurrentShelterID, DisasterID
+        select VictimID, Age as VictimAge, CurrentShelterID as ShelterID, DisasterID
         from (
             victim JOIN shelter 
             ON victim.CurrentShelterID = shelter.ShelterID
