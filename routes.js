@@ -89,6 +89,10 @@ module.exports = function (app) {
     app.route('/shelter/history/condition/status')
         .post(shelter.changeShelterConditionStatus);
 
+    // Stock API
+    app.route('/stock')
+        .get(cntlr.getStockList);
+
 	// Login & Register API
     app.route('/register')
         .post(upload.single('photo'), cntlr.register);

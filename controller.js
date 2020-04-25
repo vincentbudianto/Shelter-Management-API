@@ -487,8 +487,8 @@ exports.getShelterVictimList = function (id, callback) {
 }
 
 exports.getShelterStock = function (id, callback) {
-    connection.query(`SELECT StockID AS Id, shelterstock.Name, Description, Amount
-        FROM shelter JOIN shelterstock USING (ShelterID)
+    connection.query(`SELECT StockID AS Id, stock.Name, Description, Amount
+        FROM shelter JOIN shelterstock USING (ShelterID) JOIN stock USING (StockID)
         WHERE ShelterID= ?`, [id], function (error, rows, fields) {
         if (error) {
             console.log(error)
@@ -521,8 +521,10 @@ exports.getShelterNeedHistory = function (id, callback) {
     connection.query(`SELECT ShelterNeedHistoryID AS Id,
             ShelterNeedDesc AS Description,
             ShelterNeedStatus AS Status,
-            NeedStockID, Timestamp, UpdatedBy
+            NeedStockID, stock.Name AS NeedStockName,
+            Timestamp, UpdatedBy
         FROM shelter JOIN shelterneedshistory USING (ShelterID)
+            JOIN stock ON shelterneedshistory.NeedStockID=stock.StockID
         WHERE ShelterID = ?
         ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
@@ -720,7 +722,8 @@ exports.getAllVictim = function (callback) {
 
 exports.getAllShelterWithStock = function (callback) {
     connection.query(`SELECT *
-        FROM shelterStock LEFT JOIN shelter USING (ShelterID)`, function (error, rows, fields) {
+        FROM shelterStock JOIN Stock USING (StockID)
+            LEFT JOIN shelter USING (ShelterID)`, function (error, rows, fields) {
         if (error) {
             console.log(error);
             return callback(INTERNAL_ERROR);
@@ -779,6 +782,18 @@ exports.assignStaff = function (req, res) {
         }
     });
 };
+
+exports.getStockList = function (req, res) {
+    connection.query(`SELECT StockID as Id, Name
+        FROM stock`, function (error, rows, fields) {
+        if (error) {
+            console.log(error);
+            response.fail(INTERNAL_ERROR, res);
+        } else {
+            response.ok(rows, res);
+        }
+    });
+}
 
 exports.index = function (req, res) {
     response.ok("Hello! You are currently connected to Shelter Management RESTful API Service", res)
