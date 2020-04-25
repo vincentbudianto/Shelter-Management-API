@@ -350,27 +350,11 @@ exports.addDisaster = function (req, res) {
 exports.dashboardData = function (req, res) {
     connection.query(
         `
-        select *
+        select VictimID, Age as VictimAge, CurrentShelterID as ShelterID, DisasterID
         from (
-            (
-                (
-                    select VictimID, Age as VictimAge, CurrentShelterID
-                    from victim
-                ) as victim_dashboard
-                JOIN
-                (
-                    select *
-                    from (
-                            (select shelter.ShelterID as ShelterID
-                            from shelter) as shelter_dash JOIN
-                            ( select disaster.DisasterID as DisasterID
-                            from disaster) as disaster_dash
-                        on shelter_dash.ShelterID = disaster_dash.DisasterID
-                    )
-                ) as shelter_disaster_dashboard
-                on victim_dashboard.CurrentShelterID = shelter_disaster_dashboard.ShelterID
-            )
-        );
+            victim JOIN shelter 
+            ON victim.CurrentShelterID = shelter.ShelterID
+            ); 
         `,
     function (error, rows){
         if (error) {
