@@ -40,16 +40,19 @@ module.exports = function (app) {
     app.route('/victim/history/need')
         .get(victim.victimNeedHistory);
 
-    app.route('/victim/history/shelter')
-        .post(cntlr.updateVictimShelter);
-
     app.route('/victim/history/condition')
         .post(cntlr.updateVictimCondition);
 
     app.route('/victim/history/need')
         .post(cntlr.updateVictimNeeds);
 
-     app.route('/victim')
+    app.route('/victim/history/need/status')
+        .post(victim.changeVictimNeedStatus);
+    
+    app.route('/victim/history/condition/status')
+        .post(victim.changeVictimConditionStatus);
+
+    app.route('/victim')
         .post(upload.single('photo'), cntlr.createVictim);
 
     // Shelter API

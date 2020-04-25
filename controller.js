@@ -202,6 +202,36 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
     });
 };
 
+exports.changeVictimNeedStatus = function (id, status, callback) {
+    connection.query(
+        `UPDATE NeedsHistory
+        SET NeedStatus = ?
+        WHERE NeedHistoryID = ?`, [status, id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, { value: true });
+            }
+        }
+    );
+}
+
+exports.changeVictimConditionStatus = function (id, status, callback) {
+    connection.query(
+        `UPDATE ConditionHistory
+        SET ConditionStatus = ?
+        WHERE ConditionID = ?`, [status, id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, { value: true });
+            }
+        }
+    );
+}
+
 exports.shelterList = function (req, res) {
     connection.query
     (`SELECT *
