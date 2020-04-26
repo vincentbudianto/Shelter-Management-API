@@ -152,7 +152,7 @@ exports.victimShelterHistory = function (req, res) {
 };
 
 exports.getVictimConditionHistory = function (id, callback) {
-    connection.query(`SELECT ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
+    connection.query(`SELECT ConditionID AS 'ID', ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
         FROM ConditionHistory
         WHERE VictimID = ?`, [id], function (error, rows, fields) {
         if (error) {
@@ -177,7 +177,7 @@ exports.getVictimActiveConditionHistory = function (id, callback) {
 };
 
 exports.getVictimNeedHistory = function (id, callback) {
-    connection.query(`SELECT NeedDesc AS 'Needs', Timestamp
+    connection.query(`SELECT NeedHistoryID as 'ID', NeedDesc AS 'Needs', NeedStatus AS 'Status', Timestamp
         FROM NeedsHistory
         WHERE VictimID = ?`, [id], function (error, rows, fields) {
             if (error) {
@@ -442,7 +442,7 @@ exports.updateVictimNeeds = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-      `INSERT INTO NeedsHistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Importance, UpdatedBy) VALUES (?,?,?,?,?,?)`,
+      `INSERT INTO NeedsHistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Urgency, UpdatedBy) VALUES (?,?,?,?,?,?)`,
       [id, NeedDesc, NeedStock, NeedStatus, NeedImportance, updated],
       function (error, rows, fields) {
         if (error) {
