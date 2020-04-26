@@ -34,7 +34,7 @@ exports.victimByShelter = function (req, res) {
     const { id } = req.query;
 
     if (id) {
-        connection.query(`SELECT VictimID, NIK, Name, ConditionStatus
+        connection.query(`SELECT DISTINCT VictimID, NIK, Name, ConditionStatus
             FROM victim LEFT JOIN conditionhistory USING (VictimID)
             WHERE CurrentShelterID = ?`, [id], function (error, rows, fields) {
             if (error) {
@@ -54,7 +54,7 @@ exports.victimByName = function (req, res) {
 
     if (name) {
         const searchName = '%' + name + '%'
-        connection.query(`SELECT VictimID, NIK, Name, ConditionStatus
+        connection.query(`SELECT DISTINCT VictimID, NIK, Name, ConditionStatus
             FROM victim LEFT JOIN conditionhistory USING (VictimID)
             WHERE Name LIKE ?`, [searchName], function (error, rows, fields) {
             if (error) {
@@ -73,9 +73,9 @@ exports.victimByNoKK = function (req, res){
     const { nokk } = req.query;
 
     if (nokk) {
-        const searchNoKK = '%' + nokk + '%'
-        connection.query(`SELECT VictimID, NIK, Name, ConditionStatus
-            FROM victim LEFT JOIN conditionhistory USING (VictimID)
+        connection.query(`SELECT DISTINCT VictimID, NIK, victim.Name, Status,
+                ShelterID, shelter.name AS ShelterName, City, Province, Country
+            FROM victim LEFT JOIN shelter ON victim.CurrentShelterID=shelter.ShelterID
             WHERE NoKK = ?`, [nokk], function (error, rows) {
             if (error) {
                 console.log(error)
@@ -94,7 +94,8 @@ exports.victimByKeyword = function (req, res) {
 
     if (keyword) {
         const searchKeyword = '%' + keyword + '%'
-        connection.query(`SELECT VictimID, NIK, victim.Name, ConditionStatus, shelter.Name AS 'Shelter'
+        connection.query(`SELECT DISTINCT VictimID, NIK, victim.Name, Status,
+                ShelterID, shelter.name AS ShelterName, City, Province, Country
             FROM victim LEFT JOIN shelter ON victim.CurrentShelterID=shelter.ShelterID
                 LEFT JOIN conditionhistory USING (VictimID)
             WHERE victim.Name LIKE ? OR shelter.Name LIKE ?`, [searchKeyword, searchKeyword], function (error, rows, fields) {
