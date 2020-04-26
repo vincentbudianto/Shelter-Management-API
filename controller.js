@@ -152,7 +152,7 @@ exports.victimShelterHistory = function (req, res) {
 };
 
 exports.getVictimConditionHistory = function (id, callback) {
-    connection.query(`SELECT ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
+    connection.query(`SELECT ConditionID AS 'ID', ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
         FROM ConditionHistory
         WHERE VictimID = ?`, [id], function (error, rows, fields) {
         if (error) {
@@ -177,7 +177,7 @@ exports.getVictimActiveConditionHistory = function (id, callback) {
 };
 
 exports.getVictimNeedHistory = function (id, callback) {
-    connection.query(`SELECT NeedDesc AS 'Needs', Timestamp
+    connection.query(`SELECT NeedHistoryID as 'ID', NeedDesc AS 'Needs', Urgency, NeedStatus AS 'Status', Timestamp
         FROM NeedsHistory
         WHERE VictimID = ?`, [id], function (error, rows, fields) {
             if (error) {
@@ -201,6 +201,36 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
             }
     });
 };
+
+exports.changeVictimNeedStatus = function (id, status, callback) {
+    connection.query(
+        `UPDATE NeedsHistory
+        SET NeedStatus = ?
+        WHERE NeedHistoryID = ?`, [status, id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, { value: true });
+            }
+        }
+    );
+}
+
+exports.changeVictimConditionStatus = function (id, status, callback) {
+    connection.query(
+        `UPDATE ConditionHistory
+        SET ConditionStatus = ?
+        WHERE ConditionID = ?`, [status, id], function (error, rows, fields) {
+            if (error) {
+                console.log(error)
+                return callback(INTERNAL_ERROR);
+            } else {
+                return callback(null, { value: true });
+            }
+        }
+    );
+}
 
 exports.shelterList = function (req, res) {
     connection.query
@@ -371,7 +401,7 @@ exports.updateVictimShelter = function (req, res) {
     let shelterId = req.body.shelterId;
 
     connection.query(
-        `INSERT INTO ShelterHistory (VictimID, ShelterID) VALUES (?,?)`, [id, shelterId], function (error, rows, fields) {
+        `UPDATE Victim SET CurrentShelterID = ? WHERE VictimID = ?`, [shelterId, id], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -412,7 +442,7 @@ exports.updateVictimNeeds = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-      `INSERT INTO NeedsHistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Importance, UpdatedBy) VALUES (?,?,?,?,?,?)`,
+      `INSERT INTO NeedsHistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Urgency, UpdatedBy) VALUES (?,?,?,?,?,?)`,
       [id, NeedDesc, NeedStock, NeedStatus, NeedImportance, updated],
       function (error, rows, fields) {
         if (error) {
