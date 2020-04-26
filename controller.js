@@ -139,7 +139,8 @@ exports.victimShelterHistory = function (req, res) {
     if (id) {
         connection.query(`SELECT ShelterID, Name, District, City, Province, Country, Latitude, Longitude, Timestamp
             FROM ShelterHistory LEFT JOIN Shelter USING (ShelterID)
-            WHERE VictimID = ?`, [id], function (error, rows, fields) {
+            WHERE VictimID = ?
+            ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 response.fail(INTERNAL_ERROR, res)
@@ -383,9 +384,9 @@ exports.dashboardData = function (req, res) {
         `
         select VictimID, Age as VictimAge, CurrentShelterID as ShelterID, DisasterID
         from (
-            victim JOIN shelter 
+            victim JOIN shelter
             ON victim.CurrentShelterID = shelter.ShelterID
-            ); 
+            );
         `,
     function (error, rows){
         if (error) {
@@ -517,7 +518,7 @@ exports.getShelterStock = function (id, callback) {
 exports.getShelterConditionHistory = function (id, callback) {
     connection.query(`SELECT ShelterConditionID AS Id,
             ShelterConditionTitle AS Title,
-            ShelterConditionDesc AS Description, 
+            ShelterConditionDesc AS Description,
             ShelterConditionStatus AS Status,
             Timestamp, UpdatedBy
         FROM shelter JOIN shelterconditionhistory USING (ShelterID)
@@ -555,7 +556,7 @@ exports.shelterNeeds = function (req, res) {
     const {id} = req.query;
 
     connection.query(
-        `SELECT * FROM (SELECT VictimID, Name, NeedsDesc FROM Victim NATURAL JOIN NeedsHistory 
+        `SELECT * FROM (SELECT VictimID, Name, NeedsDesc FROM Victim NATURAL JOIN NeedsHistory
         WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY VictimID`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -643,7 +644,7 @@ exports.shelterCondition = function (req, res) {
     const {id} = req.query;
 
     connection.query(
-        `SELECT * FROM (SELECT VictimId as id, Name as name, ConditionName as conditionName, ConditionStatus as status FROM Victim NATURAL JOIN ConditionHistory 
+        `SELECT * FROM (SELECT VictimId as id, Name as name, ConditionName as conditionName, ConditionStatus as status FROM Victim NATURAL JOIN ConditionHistory
             WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY id`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error);
