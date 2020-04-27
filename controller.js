@@ -156,7 +156,8 @@ exports.victimShelterHistory = function (req, res) {
 exports.getVictimConditionHistory = function (id, callback) {
     connection.query(`SELECT ConditionID AS 'ID', ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
         FROM ConditionHistory
-        WHERE VictimID = ?`, [id], function (error, rows, fields) {
+        WHERE VictimID = ?
+        ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
             return callback(INTERNAL_ERROR)
         } else {
@@ -168,7 +169,8 @@ exports.getVictimConditionHistory = function (id, callback) {
 exports.getVictimActiveConditionHistory = function (id, callback) {
     connection.query(`SELECT *
         FROM ConditionHistory
-        WHERE VictimID = ? AND ConditionStatus = 1`, [id], function (error, rows, fields) {
+        WHERE VictimID = ? AND ConditionStatus = 1
+        ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
             console.log(error)
             return callback(INTERNAL_ERROR)
@@ -181,7 +183,8 @@ exports.getVictimActiveConditionHistory = function (id, callback) {
 exports.getVictimNeedHistory = function (id, callback) {
     connection.query(`SELECT NeedHistoryID as 'ID', NeedDesc AS 'Needs', Urgency, NeedStatus AS 'Status', Timestamp
         FROM NeedsHistory
-        WHERE VictimID = ?`, [id], function (error, rows, fields) {
+        WHERE VictimID = ?
+        ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 return callback(INTERNAL_ERROR);
@@ -194,7 +197,8 @@ exports.getVictimNeedHistory = function (id, callback) {
 exports.getVictimActiveNeedHistory = function (id, callback) {
     connection.query(`SELECT *
         FROM NeedsHistory
-        WHERE VictimID = ? AND NeedStatus = 1`, [id], function (error, rows, fields) {
+        WHERE VictimID = ? AND NeedStatus = 1
+        ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 return callback(INTERNAL_ERROR);
