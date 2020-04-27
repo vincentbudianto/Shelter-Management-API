@@ -347,7 +347,18 @@ exports.addShelter = function (req, res) {
 };
 
 exports.disasterList = function (req, res) {
-    connection.query(`SELECT * FROM disaster`,
+    connection.query(`SELECT *
+        FROM disaster LEFT JOIN (SELECT
+            DisasterID, DisasterConditionStatus AS Status,
+                DisasterConditionTitle AS ConditionTitle,
+                DisasterConditionDesc AS ConditionDesc, Timestamp
+            FROM disasterConditionHistory AS hist1
+            WHERE Timestamp = (SELECT MAX(Timestamp)
+                FROM disasterConditionHistory AS hist2
+                WHERE hist1.DisasterID = hist2.DisasterID)
+        ORDER BY Timestamp) AS conditionStatus
+        USING (DisasterID)
+        ORDER BY Status DESC, Timestamp DESC`,
     function (error, rows, fields) {
         if (error) {
             console.log(error)
