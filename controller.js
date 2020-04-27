@@ -157,7 +157,7 @@ exports.getVictimConditionHistory = function (id, callback) {
     connection.query(`SELECT ConditionID AS 'ID', ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
         FROM ConditionHistory
         WHERE VictimID = ?
-        ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
+        ORDER BY Timestamp DESC, Status DESC`, [id], function (error, rows, fields) {
         if (error) {
             return callback(INTERNAL_ERROR)
         } else {
@@ -184,7 +184,7 @@ exports.getVictimNeedHistory = function (id, callback) {
     connection.query(`SELECT NeedHistoryID as 'ID', NeedDesc AS 'Needs', Urgency, NeedStatus AS 'Status', Timestamp
         FROM NeedsHistory
         WHERE VictimID = ?
-        ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
+        ORDER BY Timestamp DESC, Status DESC`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
                 return callback(INTERNAL_ERROR);
