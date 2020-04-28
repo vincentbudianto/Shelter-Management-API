@@ -118,8 +118,8 @@ exports.victimDetail = function (req, res) {
         connection.query(`SELECT NIK, NoKK, Name, Age,
                 CurrentShelterID AS 'ShelterID', ConditionStatus AS 'Condition',
                 NeedDesc AS 'Needs', Photo
-            FROM victim LEFT JOIN ConditionHistory USING (VictimID)
-                LEFT JOIN NeedsHistory USING (VictimID)
+            FROM victim LEFT JOIN conditionhistory USING (VictimID)
+                LEFT JOIN needshistory USING (VictimID)
             WHERE VictimID = ?`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error)
@@ -138,7 +138,7 @@ exports.victimShelterHistory = function (req, res) {
 
     if (id) {
         connection.query(`SELECT ShelterID, Name, District, City, Province, Country, Latitude, Longitude, Timestamp
-            FROM ShelterHistory LEFT JOIN Shelter USING (ShelterID)
+            FROM shelterhistory LEFT JOIN shelter USING (ShelterID)
             WHERE VictimID = ?
             ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
@@ -155,7 +155,7 @@ exports.victimShelterHistory = function (req, res) {
 
 exports.getVictimConditionHistory = function (id, callback) {
     connection.query(`SELECT ConditionID AS 'ID', ConditionName as 'Name', ConditionDesc as 'Desc', ConditionStatus as 'Status', Timestamp
-        FROM ConditionHistory
+        FROM conditionhistory
         WHERE VictimID = ?
         ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
@@ -168,7 +168,7 @@ exports.getVictimConditionHistory = function (id, callback) {
 
 exports.getVictimActiveConditionHistory = function (id, callback) {
     connection.query(`SELECT *
-        FROM ConditionHistory
+        FROM conditionhistory
         WHERE VictimID = ? AND ConditionStatus = 1
         ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
         if (error) {
@@ -182,7 +182,7 @@ exports.getVictimActiveConditionHistory = function (id, callback) {
 
 exports.getVictimNeedHistory = function (id, callback) {
     connection.query(`SELECT NeedHistoryID as 'ID', NeedDesc AS 'Needs', Urgency, NeedStatus AS 'Status', Timestamp
-        FROM NeedsHistory
+        FROM needshistory
         WHERE VictimID = ?
         ORDER BY Status DESC, Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
@@ -196,7 +196,7 @@ exports.getVictimNeedHistory = function (id, callback) {
 
 exports.getVictimActiveNeedHistory = function (id, callback) {
     connection.query(`SELECT *
-        FROM NeedsHistory
+        FROM needshistory
         WHERE VictimID = ? AND NeedStatus = 1
         ORDER BY Timestamp DESC`, [id], function (error, rows, fields) {
             if (error) {
@@ -210,7 +210,7 @@ exports.getVictimActiveNeedHistory = function (id, callback) {
 
 exports.changeVictimNeedStatus = function (id, status, callback) {
     connection.query(
-        `UPDATE NeedsHistory
+        `UPDATE needshistory
         SET NeedStatus = ?
         WHERE NeedHistoryID = ?`, [status, id], function (error, rows, fields) {
             if (error) {
@@ -225,7 +225,7 @@ exports.changeVictimNeedStatus = function (id, status, callback) {
 
 exports.changeVictimConditionStatus = function (id, status, callback) {
     connection.query(
-        `UPDATE ConditionHistory
+        `UPDATE conditionhistory
         SET ConditionStatus = ?
         WHERE ConditionID = ?`, [status, id], function (error, rows, fields) {
             if (error) {
@@ -282,7 +282,7 @@ exports.register = function (req, res) {
 	let type = "Staff";
 
     connection.query(
-        `INSERT INTO Account (Username, Password, Type, NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO account (Username, Password, Type, NIK, NoKK, Name, Age, Photo, CurrentShelterID) VALUES (?,?,?,?,?,?,?,?,?)`,
         [username, password, type, nik, nokk, name, age, photo, shelterid], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -299,7 +299,7 @@ exports.login = function (req, res) {
     let password = req.body.password;
 
     connection.query(
-        `SELECT * FROM Account WHERE Username = ? AND Password = ?`,
+        `SELECT * FROM account WHERE Username = ? AND Password = ?`,
         [username, password], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -315,7 +315,7 @@ exports.checkUsername = function (req, res) {
     let username = req.body.username;
 
     connection.query(
-        `SELECT * FROM Account WHERE Username = ?`,
+        `SELECT * FROM account WHERE Username = ?`,
         [username], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -356,9 +356,9 @@ exports.disasterList = function (req, res) {
             DisasterID, DisasterConditionStatus AS Status,
                 DisasterConditionTitle AS ConditionTitle,
                 DisasterConditionDesc AS ConditionDesc, Timestamp
-            FROM disasterConditionHistory AS hist1
+            FROM disasterconditionhistory AS hist1
             WHERE Timestamp = (SELECT MAX(Timestamp)
-                FROM disasterConditionHistory AS hist2
+                FROM disasterconditionhistory AS hist2
                 WHERE hist1.DisasterID = hist2.DisasterID)
         ORDER BY Timestamp) AS conditionStatus
         USING (DisasterID)
@@ -418,7 +418,7 @@ exports.updateVictimShelter = function (req, res) {
     let shelterId = req.body.shelterId;
 
     connection.query(
-        `UPDATE Victim SET CurrentShelterID = ? WHERE VictimID = ?`, [shelterId, id], function (error, rows, fields) {
+        `UPDATE victim SET CurrentShelterID = ? WHERE VictimID = ?`, [shelterId, id], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -437,7 +437,7 @@ exports.updateVictimCondition = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-      `INSERT INTO ConditionHistory (VictimID, ConditionName, ConditionDesc, ConditionStatus, UpdatedBy) VALUES (?,?,?,?,?)`,
+      `INSERT INTO conditionhistory (VictimID, ConditionName, ConditionDesc, ConditionStatus, UpdatedBy) VALUES (?,?,?,?,?)`,
       [id, conditionName, conditionDesc, conditionStatus, updated],
       function (error, rows, fields) {
         if (error) {
@@ -459,7 +459,7 @@ exports.updateVictimNeeds = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-      `INSERT INTO NeedsHistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Urgency, UpdatedBy) VALUES (?,?,?,?,?,?)`,
+      `INSERT INTO needshistory (VictimID, NeedDesc, NeedStockID, NeedStatus, Urgency, UpdatedBy) VALUES (?,?,?,?,?,?)`,
       [id, NeedDesc, NeedStock, NeedStatus, NeedImportance, updated],
       function (error, rows, fields) {
         if (error) {
@@ -479,7 +479,7 @@ exports.updateDisasterConditions = function (req, res) {
     let disasterStatus = req.body.disasterStatus;
 
     connection.query(
-        `INSERT INTO DisasterConditionHistory (DisasterID, DisasterConditionTitle, DisasterConditionDesc, DisasterConditionStatus) VALUES (?,?,?,?)`, [id, disasterTitle, disasterDesc, disasterStatus], function (error, rows, fields) {
+        `INSERT INTO disasterconditionhistory (DisasterID, DisasterConditionTitle, DisasterConditionDesc, DisasterConditionStatus) VALUES (?,?,?,?)`, [id, disasterTitle, disasterDesc, disasterStatus], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -571,7 +571,7 @@ exports.shelterNeeds = function (req, res) {
     const {id} = req.query;
 
     connection.query(
-        `SELECT * FROM (SELECT VictimID, Name, NeedsDesc FROM Victim NATURAL JOIN NeedsHistory
+        `SELECT * FROM (SELECT VictimID, Name, NeedsDesc FROM victim NATURAL JOIN needshistory
         WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY VictimID`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -585,7 +585,7 @@ exports.shelterNeeds = function (req, res) {
 
 exports.changeShelterNeedStatus = function (id, status, callback) {
     connection.query(
-        `UPDATE ShelterNeedsHistory
+        `UPDATE shelterneedshistory
         SET ShelterNeedStatus = ?
         WHERE ShelterNeedHistoryID = ?`, [status, id], function (error, rows, fields) {
             if (error) {
@@ -600,7 +600,7 @@ exports.changeShelterNeedStatus = function (id, status, callback) {
 
 exports.changeShelterConditionStatus = function (id, status, callback) {
     connection.query(
-        `UPDATE ShelterConditionHistory
+        `UPDATE shelterconditionhistory
         SET ShelterConditionStatus = ?
         WHERE ShelterConditionID = ?`, [status, id], function (error, rows, fields) {
             if (error) {
@@ -644,7 +644,7 @@ exports.updateShelterCondition = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO ShelterConditionHistory (ShelterID, ShelterConditionTitle, ShelterConditionDesc, ShelterConditionStatus, UpdatedBy) VALUES (?,?,?,1,?)`, [id, shelterTitle, shelterDesc, updated], function (error, rows, fields) {
+        `INSERT INTO shelterconditionhistory (ShelterID, ShelterConditionTitle, ShelterConditionDesc, ShelterConditionStatus, UpdatedBy) VALUES (?,?,?,1,?)`, [id, shelterTitle, shelterDesc, updated], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -659,7 +659,7 @@ exports.shelterCondition = function (req, res) {
     const {id} = req.query;
 
     connection.query(
-        `SELECT * FROM (SELECT VictimId as id, Name as name, ConditionName as conditionName, ConditionStatus as status FROM Victim NATURAL JOIN ConditionHistory
+        `SELECT * FROM (SELECT VictimId as id, Name as name, ConditionName as conditionName, ConditionStatus as status FROM victim NATURAL JOIN conditionhistory
             WHERE CurrentShelterID = ? ORDER BY Timestamp DESC) as tempTable GROUP BY id`, [id], function (error, rows, fields) {
             if (error) {
                 console.log(error);
@@ -678,7 +678,7 @@ exports.updateShelterNeeds = function (req, res) {
     let updated = req.body.updated;
 
     connection.query(
-        `INSERT INTO ShelterNeedsHistory (ShelterID, ShelterNeedDesc, NeedStockID, ShelterNeedStatus, UpdatedBy) VALUES (?,?,?,1,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
+        `INSERT INTO shelterneedshistory (ShelterID, ShelterNeedDesc, NeedStockID, ShelterNeedStatus, UpdatedBy) VALUES (?,?,?,1,?)`, [id, shelterNeed, shelterStock, updated], function (error, rows, fields) {
             if (error) {
                 console.log(error);
                 response.fail(INTERNAL_ERROR, res);
@@ -753,7 +753,7 @@ exports.getAllVictim = function (callback) {
 
 exports.getAllShelterWithStock = function (callback) {
     connection.query(`SELECT *
-        FROM shelterStock JOIN Stock USING (StockID)
+        FROM shelterstock JOIN stock USING (StockID)
             LEFT JOIN shelter USING (ShelterID)`, function (error, rows, fields) {
         if (error) {
             console.log(error);
@@ -768,10 +768,10 @@ exports.getAllRecommendation = function (callback) {
     connection.query(`SELECT VictimID, NIK, victim.Name AS Name, NeedDesc, StockID,
             CurrentShelterID, CurrentShelterName, RecommendedShelterID, RecommendedShelterName, Urgency
         FROM victim RIGHT JOIN (SELECT *
-            FROM needsHistory
+            FROM needshistory
             WHERE NeedStatus = 1) AS ActiveNeeds
             USING (VictimID) JOIN (SELECT StockID, ShelterID AS RecommendedShelterID, shelter.Name AS RecommendedShelterName
-            FROM shelterStock LEFT JOIN shelter
+            FROM shelterstock LEFT JOIN shelter
             USING (ShelterID)) AS AvailableStock
             ON NeedStockID=AvailableStock.StockID JOIN (SELECT ShelterID, Name AS CurrentShelterName
             FROM shelter) AS ShelterList
